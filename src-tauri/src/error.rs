@@ -19,6 +19,9 @@ pub enum AppError {
 
     #[error("JSON parse error: {0}")]
     JsonParse(#[from] serde_json::Error),
+
+    #[error("Capture error: {0}")]
+    Capture(String),
 }
 
 impl serde::Serialize for AppError {

@@ -6,7 +6,10 @@ use tauri::{AppHandle, Emitter, State};
 use crate::build_order::parser::load_build_order;
 use crate::build_order::{BuildOrder, BuildOrderMeta, Step};
 use crate::error::AppError;
-use crate::state::{AppState, Calibration, Settings};
+use crate::capture::fallback::XcapCapture;
+use crate::capture::loop_task::spawn_capture_loop;
+use crate::ocr::{TemplatePipeline, fixture::generate_fixture_templates};
+use crate::state::{AppState, Calibration, CaptureHandle, Settings};
 use crate::storage::Storage;
 
 #[derive(Clone, Serialize)]
@@ -110,4 +113,52 @@ pub fn get_calibration(
 ) -> Result<Calibration, AppError> {
     let s = state.lock().unwrap();
     Ok(s.calibration.clone())
+}
+
+#[tauri::command]
+pub fn start_capture(
+    app: AppHandle,
+    state: State<Mutex<AppState>>,
+    capture_handle: State<Mutex<CaptureHandle>>,
+) -> Result<(), AppError> {
+    {
+        let mut s = state.lock().unwrap();
+        if s.capture_running {
+            return Ok(()); // Already running
+        }
+        s.capture_running = true;
+    }
+
+    let backend = Box::new(
+        XcapCapture::new().map_err(|e| AppError::Capture(e.to_string()))?
+    );
+    let templates = generate_fixture_templates();
+    let ocr = Box::new(TemplatePipeline::new(templates));
+
+    let stop_tx = spawn_capture_loop(app, backend, ocr);
+
+    {
+        let mut handle = capture_handle.lock().unwrap();
+        handle.stop_tx = Some(stop_tx);
+    }
+
+    Ok(())
+}
+
+#[tauri::command]
+pub fn stop_capture(
+    state: State<Mutex<AppState>>,
+    capture_handle: State<Mutex<CaptureHandle>>,
+) -> Result<(), AppError> {
+    {
+        let mut s = state.lock().unwrap();
+        s.capture_running = false;
+    }
+
+    let mut handle = capture_handle.lock().unwrap();
+    if let Some(tx) = handle.stop_tx.take() {
+        let _ = tx.send(());
+    }
+
+    Ok(())
 }
