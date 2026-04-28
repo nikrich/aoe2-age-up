@@ -60,14 +60,32 @@ pub struct Calibration {
     pub regions: HashMap<RegionKind, Region>,
 }
 
-impl Default for Calibration {
-    fn default() -> Self {
+impl Calibration {
+    /// Default calibration for AoE2:DE at 1920x1080 resolution.
+    /// These are approximate regions for the standard UI layout.
+    pub fn default_1080p() -> Self {
+        let mut regions = HashMap::new();
+        // Resource bar positions (approximate for 1080p AoE2:DE)
+        regions.insert(RegionKind::Food, Region { x: 68, y: 0, width: 50, height: 22 });
+        regions.insert(RegionKind::Wood, Region { x: 175, y: 0, width: 50, height: 22 });
+        regions.insert(RegionKind::Gold, Region { x: 282, y: 0, width: 50, height: 22 });
+        regions.insert(RegionKind::Stone, Region { x: 389, y: 0, width: 50, height: 22 });
+        regions.insert(RegionKind::Population, Region { x: 500, y: 0, width: 70, height: 22 });
+        regions.insert(RegionKind::GameTime, Region { x: 910, y: 0, width: 60, height: 22 });
+        regions.insert(RegionKind::Villagers, Region { x: 600, y: 0, width: 30, height: 22 });
+
         Self {
-            profile_name: "default".to_string(),
+            profile_name: "1080p-default".to_string(),
             resolution: (1920, 1080),
             ui_scale: 1.0,
-            regions: HashMap::new(),
+            regions,
         }
+    }
+}
+
+impl Default for Calibration {
+    fn default() -> Self {
+        Self::default_1080p()
     }
 }
 
