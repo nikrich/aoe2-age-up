@@ -1,0 +1,35 @@
+id: archers-britons
+name: "Archers (Britons)"
+civilization: Britons
+author: Community
+description: "22 pop flush into archers. Britons get +1 range in Castle Age."
+tags: [archers, feudal-aggression, britons]
+
+steps:
+  - action: "6 vills on sheep"
+    at: { time_seconds: 0 }
+    villagers_assigned: { food: 6, wood: 0, gold: 0, stone: 0, idle: 0 }
+  - action: "4 vills to wood (lumber camp)"
+    at: { villagers: 10 }
+    villagers_assigned: { food: 6, wood: 4, gold: 0, stone: 0, idle: 0 }
+  - action: "Lure boar, next vill to berries (build mill)"
+    at: { villagers: 11 }
+  - action: "3 more vills to berries"
+    at: { villagers: 14 }
+    villagers_assigned: { food: 10, wood: 4, gold: 0, stone: 0, idle: 0 }
+  - action: "Lure second boar"
+    at: { villagers: 15 }
+  - action: "3 vills to gold (build mining camp)"
+    at: { villagers: 18 }
+    villagers_assigned: { food: 10, wood: 4, gold: 3, stone: 0, idle: 0 }
+  - action: "1 more to wood, build house"
+    at: { villagers: 20 }
+  - action: "Click up to Feudal Age"
+    at: { villagers: 22, food_min: 500 }
+    notes: "Build barracks with one of the new wood villagers while advancing."
+  - action: "Build 2 archery ranges in Feudal"
+    at: { time_seconds: 660 }
+    notes: "Non-stop archer production. Research fletching."
+  - action: "Send archers across the map"
+    at: { time_seconds: 780 }
+    notes: "Target enemy woodlines and gold miners."

@@ -1,0 +1,39 @@
+id: fast-castle-cavalier
+name: "Fast Castle into Knights"
+civilization: Generic
+author: Community
+description: "27+2 pop fast castle into knight production. Works for Franks, Berbers, Huns, etc."
+tags: [fast-castle, knights, castle-age, intermediate]
+
+steps:
+  - action: "6 vills on sheep"
+    at: { time_seconds: 0 }
+    villagers_assigned: { food: 6, wood: 0, gold: 0, stone: 0, idle: 0 }
+  - action: "4 vills to wood (lumber camp)"
+    at: { villagers: 10 }
+  - action: "Lure first boar"
+    at: { villagers: 11 }
+  - action: "Build mill on berries, 2 to berries"
+    at: { villagers: 13 }
+  - action: "Lure second boar, 2 more to berries"
+    at: { villagers: 15 }
+    villagers_assigned: { food: 11, wood: 4, gold: 0, stone: 0, idle: 0 }
+  - action: "3 more to wood (second lumber camp if needed)"
+    at: { villagers: 18 }
+  - action: "5 to farms"
+    at: { villagers: 21 }
+    notes: "Reseed farms as sheep and boar run out."
+  - action: "3 to gold (mining camp)"
+    at: { villagers: 24 }
+  - action: "Click up to Feudal Age"
+    at: { villagers: 27, food_min: 500 }
+    notes: "Build barracks while advancing."
+  - action: "Click up to Castle Age immediately"
+    at: { food_min: 800, gold_min: 200 }
+    notes: "Build blacksmith + stable while advancing to Feudal. Click Castle as soon as Feudal hits."
+  - action: "Build 2 stables, start knight production"
+    at: { time_seconds: 1020 }
+    notes: "Research bloodlines and husbandry when affordable."
+  - action: "Boom behind knights — add TCs"
+    at: { time_seconds: 1200 }
+    notes: "Build 2 additional TCs. Keep producing knights and villagers."
