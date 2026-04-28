@@ -21,7 +21,7 @@ function App() {
 
   return (
     <div className="app">
-      <div className="view-switcher">
+      <div className="view-switcher" data-tauri-drag-region>
         <button className={`view-btn ${view === "overlay" ? "view-btn--active" : ""}`} onClick={() => setView("overlay")}>Overlay</button>
         <button className={`view-btn ${view === "library" ? "view-btn--active" : ""}`} onClick={() => setView("library")}>Library</button>
         <button className={`view-btn ${view === "settings" ? "view-btn--active" : ""}`} onClick={() => setView("settings")}>Settings</button>
