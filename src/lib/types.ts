@@ -77,3 +77,17 @@ export interface HotkeyConfig {
   toggle_visibility: string;
   toggle_click_through: string;
 }
+
+export interface Calibration {
+  profile_name: string;
+  resolution: [number, number];
+  ui_scale: number;
+  regions: Record<string, Region>;
+}
+
+export interface Region {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
