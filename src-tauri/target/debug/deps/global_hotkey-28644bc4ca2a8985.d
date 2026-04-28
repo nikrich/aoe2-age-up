@@ -1,0 +1,10 @@
+/Users/jannik/development/nikrich/open-age/src-tauri/target/debug/deps/global_hotkey-28644bc4ca2a8985.d: /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/lib.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/error.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/hotkey.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/platform_impl/mod.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/platform_impl/macos/mod.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/platform_impl/macos/ffi.rs
+
+/Users/jannik/development/nikrich/open-age/src-tauri/target/debug/deps/libglobal_hotkey-28644bc4ca2a8985.rmeta: /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/lib.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/error.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/hotkey.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/platform_impl/mod.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/platform_impl/macos/mod.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/platform_impl/macos/ffi.rs
+
+/Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/lib.rs:
+/Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/error.rs:
+/Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/hotkey.rs:
+/Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/platform_impl/mod.rs:
+/Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/platform_impl/macos/mod.rs:
+/Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/global-hotkey-0.6.4/src/platform_impl/macos/ffi.rs:

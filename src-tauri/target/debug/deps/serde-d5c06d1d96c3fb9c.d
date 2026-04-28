@@ -1,0 +1,14 @@
+/Users/jannik/development/nikrich/open-age/src-tauri/target/debug/deps/serde-d5c06d1d96c3fb9c.d: /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/jannik/development/nikrich/open-age/src-tauri/target/debug/build/serde-ed3d927fc6099e73/out/private.rs
+
+/Users/jannik/development/nikrich/open-age/src-tauri/target/debug/deps/libserde-d5c06d1d96c3fb9c.rlib: /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/jannik/development/nikrich/open-age/src-tauri/target/debug/build/serde-ed3d927fc6099e73/out/private.rs
+
+/Users/jannik/development/nikrich/open-age/src-tauri/target/debug/deps/libserde-d5c06d1d96c3fb9c.rmeta: /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/jannik/development/nikrich/open-age/src-tauri/target/debug/build/serde-ed3d927fc6099e73/out/private.rs
+
+/Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/Users/jannik/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/Users/jannik/development/nikrich/open-age/src-tauri/target/debug/build/serde-ed3d927fc6099e73/out/private.rs:
+
+# env-dep:OUT_DIR=/Users/jannik/development/nikrich/open-age/src-tauri/target/debug/build/serde-ed3d927fc6099e73/out
