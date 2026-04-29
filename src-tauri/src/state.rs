@@ -65,14 +65,14 @@ impl Calibration {
     /// These are approximate regions for the standard UI layout.
     pub fn default_1080p() -> Self {
         let mut regions = HashMap::new();
-        // Resource bar positions (approximate for 1080p AoE2:DE)
-        regions.insert(RegionKind::Food, Region { x: 68, y: 0, width: 50, height: 22 });
-        regions.insert(RegionKind::Wood, Region { x: 175, y: 0, width: 50, height: 22 });
-        regions.insert(RegionKind::Gold, Region { x: 282, y: 0, width: 50, height: 22 });
-        regions.insert(RegionKind::Stone, Region { x: 389, y: 0, width: 50, height: 22 });
-        regions.insert(RegionKind::Population, Region { x: 500, y: 0, width: 70, height: 22 });
-        regions.insert(RegionKind::GameTime, Region { x: 910, y: 0, width: 60, height: 22 });
-        regions.insert(RegionKind::Villagers, Region { x: 600, y: 0, width: 30, height: 22 });
+        // Resource bar positions for 1080p AoE2:DE (calibrated from docs/aoe.png)
+        regions.insert(RegionKind::Food, Region { x: 37, y: 7, width: 45, height: 22 });
+        regions.insert(RegionKind::Wood, Region { x: 140, y: 7, width: 45, height: 22 });
+        regions.insert(RegionKind::Gold, Region { x: 232, y: 7, width: 45, height: 22 });
+        regions.insert(RegionKind::Stone, Region { x: 335, y: 7, width: 45, height: 22 });
+        regions.insert(RegionKind::Population, Region { x: 420, y: 7, width: 55, height: 22 });
+        regions.insert(RegionKind::GameTime, Region { x: 832, y: 7, width: 85, height: 22 });
+        regions.insert(RegionKind::Villagers, Region { x: 525, y: 7, width: 30, height: 22 });
 
         Self {
             profile_name: "1080p-default".to_string(),

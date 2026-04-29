@@ -12,6 +12,7 @@ pub struct CharBox {
 /// Segment a binary image into character bounding boxes, left-to-right.
 /// Expects white (255) characters on black (0) background.
 /// Uses vertical projection: finds columns with white pixels, groups them.
+/// Filters out boxes shorter than 40% of the image height (noise).
 pub fn segment_characters(binary: &GrayImage, min_width: u32) -> Vec<CharBox> {
     let (w, h) = binary.dimensions();
     if w == 0 || h == 0 {
@@ -56,6 +57,10 @@ pub fn segment_characters(binary: &GrayImage, min_width: u32) -> Vec<CharBox> {
             });
         }
     }
+
+    // Filter out noise: boxes must be at least 40% of image height
+    let min_height = (h * 2 / 5).max(3);
+    boxes.retain(|b| b.height >= min_height);
 
     boxes
 }
