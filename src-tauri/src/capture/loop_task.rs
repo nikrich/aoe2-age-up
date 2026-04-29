@@ -1,9 +1,9 @@
 use std::collections::HashMap;
+use std::sync::mpsc;
 use std::sync::Mutex;
 use std::time::Instant;
 
 use tauri::{AppHandle, Emitter, Manager};
-use tokio::sync::oneshot;
 use tracing::{info, warn};
 
 use crate::build_order::engine::evaluate;
@@ -14,20 +14,20 @@ use crate::state::{AppState, GameState, RegionKind};
 
 use super::CaptureBackend;
 
-/// Spawn the capture loop as a Tokio task. Returns a stop sender.
+/// Spawn the capture loop on a dedicated thread. Returns a stop sender.
 pub fn spawn_capture_loop(
     app: AppHandle,
     mut backend: Box<dyn CaptureBackend>,
     ocr: Box<dyn OcrPipeline>,
-) -> oneshot::Sender<()> {
-    let (stop_tx, mut stop_rx) = oneshot::channel::<()>();
+) -> mpsc::Sender<()> {
+    let (stop_tx, stop_rx) = mpsc::channel::<()>();
 
-    tokio::spawn(async move {
+    std::thread::spawn(move || {
         info!("Capture loop started");
         let mut last_hashes: HashMap<RegionKind, u64> = HashMap::new();
 
         loop {
-            // Check for stop signal
+            // Check for stop signal (non-blocking)
             if stop_rx.try_recv().is_ok() {
                 info!("Capture loop received stop signal");
                 break;
@@ -42,29 +42,13 @@ pub fn spawn_capture_loop(
                 s.settings.capture_interval_ms
             };
 
-            // Capture frame (blocking — run in spawn_blocking)
-            let frame = {
-                let result = tokio::task::spawn_blocking(move || {
-                    let frame = backend.next_frame();
-                    (backend, frame)
-                })
-                .await;
-
-                match result {
-                    Ok((b, Ok(frame))) => {
-                        backend = b;
-                        frame
-                    }
-                    Ok((b, Err(e))) => {
-                        backend = b;
-                        warn!("Capture failed: {}", e);
-                        tokio::time::sleep(tokio::time::Duration::from_millis(interval_ms)).await;
-                        continue;
-                    }
-                    Err(e) => {
-                        warn!("Capture task panicked: {}", e);
-                        break;
-                    }
+            // Capture frame
+            let frame = match backend.next_frame() {
+                Ok(frame) => frame,
+                Err(e) => {
+                    warn!("Capture failed: {}", e);
+                    std::thread::sleep(std::time::Duration::from_millis(interval_ms));
+                    continue;
                 }
             };
 
@@ -156,7 +140,7 @@ pub fn spawn_capture_loop(
                 }
             }
 
-            tokio::time::sleep(tokio::time::Duration::from_millis(interval_ms)).await;
+            std::thread::sleep(std::time::Duration::from_millis(interval_ms));
         }
 
         info!("Capture loop stopped");

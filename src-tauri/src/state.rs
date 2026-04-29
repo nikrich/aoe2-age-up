@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::Instant;
-use tokio::sync::oneshot;
+use std::sync::mpsc;
 
 use crate::build_order::BuildOrder;
 
@@ -172,5 +172,5 @@ impl Default for AppState {
 
 /// Handle for controlling the capture loop from IPC commands.
 pub struct CaptureHandle {
-    pub stop_tx: Option<oneshot::Sender<()>>,
+    pub stop_tx: Option<mpsc::Sender<()>>,
 }
