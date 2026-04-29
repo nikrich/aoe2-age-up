@@ -32,6 +32,12 @@ AoE2 build order overlay built with Tauri 2.0 (Rust backend) + React/TypeScript 
 - Phase 4: Auto-advance wiring (trigger evaluation against live game state)
 - Phase 5: Build order editor, full settings UI, installer polish
 
+## Workflow
+
+- All feature work happens on feature branches (e.g., `feat/phase-2-capture`)
+- Submit PRs to `main` when work is complete
+- Never push directly to `main`
+
 ## Conventions
 
 - Commits use conventional commits: `feat:`, `fix:`, `docs:`, `ci:`

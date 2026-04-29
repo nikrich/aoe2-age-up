@@ -12,7 +12,7 @@ mod ocr;
 mod state;
 mod storage;
 
-use state::AppState;
+use state::{AppState, CaptureHandle};
 use storage::Storage;
 
 fn main() {
@@ -38,6 +38,7 @@ fn main() {
             };
 
             app.manage(Mutex::new(app_state));
+            app.manage(Mutex::new(CaptureHandle { stop_tx: None }));
             app.manage(storage);
 
             hotkeys::setup_hotkeys(&app.handle().clone());
@@ -52,6 +53,8 @@ fn main() {
             ipc::reset_steps,
             ipc::get_settings,
             ipc::get_calibration,
+            ipc::start_capture,
+            ipc::stop_capture,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -19,6 +19,9 @@ global-hotkey = "0.6"
 tracing = "0.1"
 tracing-subscriber = "0.3"
 uuid = { version = "1", features = ["v4", "serde"] }
+xcap = "0.0.14"
+image = { version = "0.25", default-features = false, features = ["png"] }
+imageproc = "0.25"
 
 [features]
 default = ["custom-protocol"]
