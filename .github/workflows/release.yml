@@ -28,6 +28,21 @@ jobs:
         with:
           workspaces: ./src-tauri -> target
 
+      - name: Install Tesseract OCR
+        shell: pwsh
+        run: |
+          choco install tesseract -y --no-progress
+          $tessPath = "C:\Program Files\Tesseract-OCR"
+
+          # Copy binary as Tauri sidecar (must match target triple)
+          New-Item -Path "src-tauri\binaries" -ItemType Directory -Force
+          Copy-Item "$tessPath\tesseract.exe" "src-tauri\binaries\tesseract-x86_64-pc-windows-msvc.exe"
+
+          # Copy DLLs and tessdata for bundling
+          New-Item -Path "src-tauri\tesseract-deps\tessdata" -ItemType Directory -Force
+          Get-ChildItem "$tessPath\*.dll" | Copy-Item -Destination "src-tauri\tesseract-deps\"
+          Copy-Item "$tessPath\tessdata\eng.traineddata" "src-tauri\tesseract-deps\tessdata\"
+
       - name: Install frontend dependencies
         run: npm ci
 
