@@ -16,7 +16,9 @@ use state::{AppState, CaptureHandle};
 use storage::Storage;
 
 fn main() {
-    tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt()
+        .with_env_filter("aoe_overlay=debug")
+        .init();
 
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())

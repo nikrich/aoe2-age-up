@@ -54,10 +54,8 @@ impl Storage {
             let path = entry.path();
             if path.extension().map_or(false, |ext| ext == "yaml" || ext == "yml" || ext == "json") {
                 let target = target_dir.join(entry.file_name());
-                if !target.exists() {
-                    std::fs::copy(&path, &target)?;
-                    info!("Copied bundled build order: {}", entry.file_name().to_string_lossy());
-                }
+                std::fs::copy(&path, &target)?;
+                info!("Copied bundled build order: {}", entry.file_name().to_string_lossy());
             }
         }
         Ok(())

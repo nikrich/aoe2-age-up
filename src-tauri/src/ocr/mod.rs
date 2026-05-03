@@ -3,6 +3,7 @@ pub mod segment;
 pub mod template;
 pub mod fixture;
 pub mod tesseract;
+pub mod windows_ocr;
 
 use anyhow::Result;
 use image::RgbaImage;

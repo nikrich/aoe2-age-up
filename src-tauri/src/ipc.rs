@@ -8,7 +8,7 @@ use crate::build_order::{BuildOrder, BuildOrderMeta, Step};
 use crate::error::AppError;
 use crate::capture::fallback::XcapCapture;
 use crate::capture::loop_task::spawn_capture_loop;
-use crate::ocr::{TemplatePipeline, fixture::generate_fixture_templates};
+use crate::ocr::windows_ocr::TesseractPipeline;
 use crate::state::{AppState, Calibration, CaptureHandle, Settings};
 use crate::storage::Storage;
 
@@ -132,8 +132,9 @@ pub fn start_capture(
     let backend = Box::new(
         XcapCapture::new().map_err(|e| AppError::Capture(e.to_string()))?
     );
-    let templates = generate_fixture_templates();
-    let ocr = Box::new(TemplatePipeline::new(templates));
+    let ocr = Box::new(
+        TesseractPipeline::new().map_err(|e| AppError::Capture(e.to_string()))?
+    );
 
     let stop_tx = spawn_capture_loop(app, backend, ocr);
 
