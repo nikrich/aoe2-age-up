@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/nicholasrice/tauri/refs/heads/feat/v2-schema-update/crates/tauri-cli/schema.json",
   "productName": "AoE Overlay",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "identifier": "com.aoe-overlay.app",
   "build": {
     "beforeDevCommand": "npm run dev",
