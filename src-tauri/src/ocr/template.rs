@@ -16,13 +16,12 @@ pub fn match_character(
     let sub = binary.view(char_box.x, char_box.y, char_box.width, char_box.height)
         .to_image();
 
-    let (tw, th) = templates.values().next().map(|t| (t.width(), t.height()))?;
-    let resized = resize(&sub, tw, th, FilterType::Nearest);
-
     let mut best_char = None;
     let mut best_score = f64::NEG_INFINITY;
 
     for (&ch, template) in templates {
+        let (tw, th) = (template.width(), template.height());
+        let resized = resize(&sub, tw, th, FilterType::Nearest);
         let score = normalized_cross_correlation(&resized, template);
         if score > best_score {
             best_score = score;

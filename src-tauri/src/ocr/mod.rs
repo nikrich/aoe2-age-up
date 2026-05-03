@@ -29,8 +29,8 @@ impl TemplatePipeline {
     pub fn new(templates: HashMap<char, image::GrayImage>) -> Self {
         Self {
             templates,
-            threshold_value: 180,
-            confidence: 0.7,
+            threshold_value: 160,
+            confidence: 0.5,
         }
     }
 

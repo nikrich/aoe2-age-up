@@ -3,13 +3,15 @@ import { invoke } from "@tauri-apps/api/core";
 import { useBuildOrder } from "../hooks/useBuildOrder";
 import { useGameState } from "../hooks/useGameState";
 import { StepCard } from "./StepCard";
+import type { BuildOrder } from "../lib/types";
 
 interface OverlayProps {
   onOpenLibrary: () => void;
+  buildOrder: BuildOrder | null;
 }
 
-export function Overlay({ onOpenLibrary }: OverlayProps) {
-  const { buildOrder, currentStep, totalSteps, advance, previous, reset } = useBuildOrder();
+export function Overlay({ onOpenLibrary, buildOrder }: OverlayProps) {
+  const { currentStep, totalSteps, advance, previous, reset } = useBuildOrder();
   const gameState = useGameState();
   const [capturing, setCapturing] = useState(false);
 
@@ -45,7 +47,7 @@ export function Overlay({ onOpenLibrary }: OverlayProps) {
     <div className="overlay">
       <div className="overlay-header">
         <span className="overlay-title">{buildOrder.name}</span>
-        <span className="step-counter">{currentStep + 1} / {totalSteps}</span>
+        <span className="step-counter">{currentStep + 1} / {totalSteps || buildOrder.steps.length}</span>
       </div>
       {currentStepData && <StepCard step={currentStepData} variant="current" />}
       {nextStepData && <StepCard step={nextStepData} variant="next" />}
