@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
 use image::RgbaImage;
+use std::path::PathBuf;
 use std::process::Command;
 use tracing::{debug, warn};
 
@@ -8,38 +9,33 @@ use super::OcrPipeline;
 
 /// OCR backend using Tesseract CLI (bundled with the app).
 pub struct TesseractPipeline {
-    tesseract_path: String,
-    tessdata_path: String,
+    tesseract_path: PathBuf,
+    tessdata_path: PathBuf,
+    /// Directory containing tesseract's DLL dependencies (added to PATH on spawn).
+    deps_dir: PathBuf,
 }
 
 impl TesseractPipeline {
-    pub fn new() -> Result<Self> {
-        // In dev mode, use the system-installed Tesseract
-        // In production, use the bundled sidecar
-        let tesseract_path = if cfg!(debug_assertions) {
-            "G:/Program Files/Tesseract-OCR/tesseract.exe".to_string()
-        } else {
-            // Bundled sidecar path resolved at runtime
-            "tesseract".to_string()
-        };
+    pub fn new(tesseract_path: PathBuf, tessdata_path: PathBuf, deps_dir: PathBuf) -> Result<Self> {
+        debug!("Tesseract binary: {:?}", tesseract_path);
+        debug!("Tessdata dir: {:?}", tessdata_path);
+        debug!("Deps dir: {:?}", deps_dir);
 
-        let tessdata_path = if cfg!(debug_assertions) {
-            "G:/Program Files/Tesseract-OCR/tessdata".to_string()
-        } else {
-            "tessdata".to_string()
-        };
+        // Build PATH that includes the deps dir so tesseract can find its DLLs
+        let path_env = build_path_with_deps(&deps_dir);
 
         // Verify tesseract is accessible
         let output = Command::new(&tesseract_path)
             .arg("--version")
             .env("TESSDATA_PREFIX", &tessdata_path)
+            .env("PATH", &path_env)
             .output()
             .context("Failed to find tesseract. Is it installed?")?;
 
         let version = String::from_utf8_lossy(&output.stdout);
         debug!("Tesseract: {}", version.lines().next().unwrap_or("unknown"));
 
-        Ok(Self { tesseract_path, tessdata_path })
+        Ok(Self { tesseract_path, tessdata_path, deps_dir })
     }
 
     fn recognize_text(&self, image: &[u8], width: u32, height: u32) -> Result<String> {
@@ -61,6 +57,8 @@ impl TesseractPipeline {
         let tmp = std::env::temp_dir().join("aoe_ocr_input.png");
         img.save(&tmp).context("Failed to save temp image")?;
 
+        let path_env = build_path_with_deps(&self.deps_dir);
+
         let output = Command::new(&self.tesseract_path)
             .arg(tmp.to_str().unwrap())
             .arg("stdout")
@@ -68,6 +66,7 @@ impl TesseractPipeline {
             .arg("-c").arg("tessedit_char_whitelist=0123456789:/")
             .arg("-l").arg("eng")
             .env("TESSDATA_PREFIX", &self.tessdata_path)
+            .env("PATH", &path_env)
             .output()
             .context("Failed to run tesseract")?;
 
@@ -116,6 +115,12 @@ impl TesseractPipeline {
             _ => None,
         }
     }
+}
+
+/// Prepend the deps directory to the system PATH so tesseract can find its DLLs.
+fn build_path_with_deps(deps_dir: &std::path::Path) -> String {
+    let system_path = std::env::var("PATH").unwrap_or_default();
+    format!("{};{}", deps_dir.display(), system_path)
 }
 
 impl OcrPipeline for TesseractPipeline {

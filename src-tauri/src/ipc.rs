@@ -1,7 +1,7 @@
 use std::sync::Mutex;
 
 use serde::Serialize;
-use tauri::{AppHandle, Emitter, State};
+use tauri::{AppHandle, Emitter, Manager, State};
 
 use crate::build_order::parser::load_build_order;
 use crate::build_order::{BuildOrder, BuildOrderMeta, Step};
@@ -132,8 +132,24 @@ pub fn start_capture(
     let backend = Box::new(
         XcapCapture::new().map_err(|e| AppError::Capture(e.to_string()))?
     );
+
+    // Resolve bundled tesseract paths from the Tauri app
+    // Sidecar binary lives next to the main exe; DLLs + tessdata are in resources
+    let exe_dir = std::env::current_exe()
+        .map_err(|e| AppError::Capture(format!("Failed to get exe path: {}", e)))?
+        .parent()
+        .unwrap()
+        .to_path_buf();
+    let resource_dir = app.path().resource_dir()
+        .map_err(|e| AppError::Capture(format!("Failed to resolve resource dir: {}", e)))?;
+
+    let tesseract_path = exe_dir.join("tesseract-x86_64-pc-windows-msvc.exe");
+    let deps_dir = resource_dir.join("tesseract-deps");
+    let tessdata_path = deps_dir.join("tessdata");
+
     let ocr = Box::new(
-        TesseractPipeline::new().map_err(|e| AppError::Capture(e.to_string()))?
+        TesseractPipeline::new(tesseract_path, tessdata_path, deps_dir)
+            .map_err(|e| AppError::Capture(e.to_string()))?
     );
 
     let stop_tx = spawn_capture_loop(app, backend, ocr);
