@@ -173,6 +173,9 @@ html, body, #root {
 
 .view-btn--active { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
 
+.close-btn { margin-left: auto; color: var(--text-secondary); font-size: 16px; line-height: 1; padding: 2px 6px; }
+.close-btn:hover { color: #f87171; }
+
 .settings {
   padding: 12px;
   background: var(--bg-primary);
@@ -192,3 +195,24 @@ html, body, #root {
 
 .settings-label { color: var(--text-secondary); }
 .settings-value { color: var(--text-primary); font-family: monospace; }
+
+.game-state-bar {
+  display: flex;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: monospace;
+  color: var(--text-secondary);
+}
+
+.resource { white-space: nowrap; }
+.resource.food { color: #f87171; }
+.resource.wood { color: #4ade80; }
+.resource.gold { color: #fbbf24; }
+.resource.stone { color: #94a3b8; }
+.resource.vils { color: #60a5fa; }
+.resource.time { color: var(--text-primary); }
+
+.nav-btn--active { color: var(--accent); border-color: var(--accent); }

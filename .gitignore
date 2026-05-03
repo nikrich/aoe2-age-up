@@ -25,3 +25,22 @@ dist-ssr
 
 # Rust
 src-tauri/target/
+
+# Debug/calibration images and OCR logs
+*.png
+ocr-log*.txt
+debug*.png
+calibration*.png
+docs/crop_*.png
+docs/binary_*.png
+docs/chunk_*.png
+docs/extract_*.png
+docs/templates/
+
+# Tesseract binaries and deps (bundled at build time)
+src-tauri/binaries/
+src-tauri/tesseract-deps/
+
+# MemPalace per-project files (issue #185)
+mempalace.yaml
+entities.json

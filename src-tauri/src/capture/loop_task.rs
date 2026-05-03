@@ -4,7 +4,7 @@ use std::sync::Mutex;
 use std::time::Instant;
 
 use tauri::{AppHandle, Emitter, Manager};
-use tracing::{info, warn};
+use tracing::{debug, info, warn};
 
 use crate::build_order::engine::evaluate;
 use crate::ipc::emit_step_changed;
@@ -59,8 +59,15 @@ pub fn spawn_capture_loop(
                 s.calibration.regions.clone()
             };
 
-            let mut new_game_state = GameState::default();
+            // Start from previous state so values persist when regions are skipped
+            let mut new_game_state = {
+                let state_mutex = app.state::<Mutex<AppState>>();
+                let s = state_mutex.lock().unwrap();
+                s.last_game_state.clone()
+            };
             let mut any_update = false;
+
+            debug!("Processing frame {}x{}, {} regions", frame.width, frame.height, regions.len());
 
             for (kind, region) in &regions {
                 let cropped = crop_region(
@@ -130,13 +137,20 @@ pub fn spawn_capture_loop(
                     if let Some(ref bo) = s.current_build_order {
                         if s.current_step_index < bo.steps.len() - 1 {
                             let next_trigger = &bo.steps[s.current_step_index + 1].at;
-                            if evaluate(next_trigger, &new_game_state) {
+                            let result = evaluate(next_trigger, &new_game_state);
+                            debug!("Auto-advance check: step={}, trigger={:?}, vils={:?}, time={:?}, result={}",
+                                s.current_step_index, next_trigger, new_game_state.villagers, new_game_state.game_time_seconds, result);
+                            if result {
                                 s.current_step_index += 1;
                                 emit_step_changed(&app, &s);
                                 info!("Auto-advanced to step {}", s.current_step_index);
                             }
                         }
+                    } else {
+                        debug!("Auto-advance: no build order loaded");
                     }
+                } else {
+                    debug!("Auto-advance: disabled");
                 }
             }
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Overlay } from "./components/Overlay";
 import { BuildOrderLibrary } from "./components/BuildOrderLibrary";
 import { Settings } from "./components/Settings";
@@ -28,6 +29,7 @@ function App() {
         <button className={`view-btn ${view === "overlay" ? "view-btn--active" : ""}`} onClick={() => setView("overlay")}>Overlay</button>
         <button className={`view-btn ${view === "library" ? "view-btn--active" : ""}`} onClick={() => setView("library")}>Library</button>
         <button className={`view-btn ${view === "settings" ? "view-btn--active" : ""}`} onClick={() => setView("settings")}>Settings</button>
+        <button className="view-btn close-btn" onClick={() => getCurrentWindow().close()}>✕</button>
       </div>
       {view === "overlay" && <Overlay onOpenLibrary={() => setView("library")} buildOrder={buildOrder} />}
       {view === "library" && <BuildOrderLibrary onSelect={handleSelectBuildOrder} />}
