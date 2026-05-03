@@ -143,8 +143,19 @@ pub fn start_capture(
     let resource_dir = app.path().resource_dir()
         .map_err(|e| AppError::Capture(format!("Failed to resolve resource dir: {}", e)))?;
 
-    let tesseract_path = exe_dir.join("tesseract-x86_64-pc-windows-msvc.exe");
-    let deps_dir = resource_dir.join("tesseract-deps");
+    // Tauri copies the sidecar next to the exe — with the target triple in release,
+    // but as plain "tesseract.exe" in dev mode. Try both.
+    let tesseract_path = {
+        let with_triple = exe_dir.join("tesseract-x86_64-pc-windows-msvc.exe");
+        let plain = exe_dir.join("tesseract.exe");
+        if with_triple.exists() { with_triple } else { plain }
+    };
+    // Resources may be in the resource dir (release) or next to the exe (dev)
+    let deps_dir = {
+        let in_resource = resource_dir.join("tesseract-deps");
+        let in_exe = exe_dir.join("tesseract-deps");
+        if in_resource.exists() { in_resource } else { in_exe }
+    };
     let tessdata_path = deps_dir.join("tessdata");
 
     let ocr = Box::new(
