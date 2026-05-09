@@ -23,6 +23,8 @@ html, body, #root {
 
 .app { height: 100%; display: flex; flex-direction: column; }
 
+.app-content { display: flex; flex-direction: column; }
+
 .overlay {
   padding: 12px;
   display: flex;

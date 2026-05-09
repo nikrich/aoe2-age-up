@@ -130,48 +130,55 @@ pub fn start_capture(
         s.capture_running = true;
     }
 
-    let backend = Box::new(
-        XcapCapture::new().map_err(|e| AppError::Capture(e.to_string()))?
-    );
+    // Wrap in a closure so we can reset capture_running on any failure
+    let result = (|| -> Result<(), AppError> {
+        let backend = Box::new(
+            XcapCapture::new().map_err(|e| AppError::Capture(e.to_string()))?
+        );
 
-    // Resolve bundled tesseract paths from the Tauri app
-    // Sidecar binary lives next to the main exe; DLLs + tessdata are in resources
-    let exe_dir = std::env::current_exe()
-        .map_err(|e| AppError::Capture(format!("Failed to get exe path: {}", e)))?
-        .parent()
-        .unwrap()
-        .to_path_buf();
-    let resource_dir = app.path().resource_dir()
-        .map_err(|e| AppError::Capture(format!("Failed to resolve resource dir: {}", e)))?;
+        let exe_dir = std::env::current_exe()
+            .map_err(|e| AppError::Capture(format!("Failed to get exe path: {}", e)))?
+            .parent()
+            .unwrap()
+            .to_path_buf();
+        let resource_dir = app.path().resource_dir()
+            .map_err(|e| AppError::Capture(format!("Failed to resolve resource dir: {}", e)))?;
 
-    // Tauri copies the sidecar next to the exe — with the target triple in release,
-    // but as plain "tesseract.exe" in dev mode. Try both.
-    let tesseract_path = {
-        let with_triple = exe_dir.join("tesseract-x86_64-pc-windows-msvc.exe");
-        let plain = exe_dir.join("tesseract.exe");
-        if with_triple.exists() { with_triple } else { plain }
-    };
-    // Resources may be in the resource dir (release) or next to the exe (dev)
-    let deps_dir = {
-        let in_resource = resource_dir.join("tesseract-deps");
-        let in_exe = exe_dir.join("tesseract-deps");
-        if in_resource.exists() { in_resource } else { in_exe }
-    };
-    let tessdata_path = deps_dir.join("tessdata");
+        let tesseract_path = {
+            let with_triple = exe_dir.join("tesseract-x86_64-pc-windows-msvc.exe");
+            let plain = exe_dir.join("tesseract.exe");
+            if with_triple.exists() { with_triple } else { plain }
+        };
+        let deps_dir = {
+            let in_resource = resource_dir.join("tesseract-deps");
+            let in_exe = exe_dir.join("tesseract-deps");
+            if in_resource.exists() { in_resource } else { in_exe }
+        };
+        let tessdata_path = deps_dir.join("tessdata");
 
-    let ocr = Box::new(
-        TesseractPipeline::new(tesseract_path, tessdata_path, deps_dir)
-            .map_err(|e| AppError::Capture(e.to_string()))?
-    );
+        tracing::info!("Tesseract: {:?}, tessdata: {:?}, deps: {:?}", tesseract_path, tessdata_path, deps_dir);
 
-    let stop_tx = spawn_capture_loop(app, backend, ocr);
+        let ocr = Box::new(
+            TesseractPipeline::new(tesseract_path, tessdata_path, deps_dir)
+                .map_err(|e| AppError::Capture(e.to_string()))?
+        );
 
-    {
-        let mut handle = capture_handle.lock().unwrap();
-        handle.stop_tx = Some(stop_tx);
+        let stop_tx = spawn_capture_loop(app, backend, ocr);
+
+        {
+            let mut handle = capture_handle.lock().unwrap();
+            handle.stop_tx = Some(stop_tx);
+        }
+
+        Ok(())
+    })();
+
+    if result.is_err() {
+        let mut s = state.lock().unwrap();
+        s.capture_running = false;
     }
 
-    Ok(())
+    result
 }
 
 #[tauri::command]

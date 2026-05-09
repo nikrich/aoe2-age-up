@@ -3,6 +3,7 @@ use global_hotkey::{
     GlobalHotKeyEvent, GlobalHotKeyManager,
 };
 use tauri::{AppHandle, Manager};
+use tracing::warn;
 
 use crate::ipc::emit_step_changed;
 use crate::state::AppState;
@@ -25,10 +26,17 @@ pub fn setup_hotkeys(app: &AppHandle) {
     let reset = HotKey::new(Some(mods), Code::KeyR);
     let toggle_visibility = HotKey::new(Some(mods), Code::KeyH);
 
-    manager.register(advance).expect("Failed to register advance hotkey");
-    manager.register(previous).expect("Failed to register previous hotkey");
-    manager.register(reset).expect("Failed to register reset hotkey");
-    manager.register(toggle_visibility).expect("Failed to register toggle_visibility hotkey");
+    // Try to unregister first in case a previous instance didn't clean up
+    let hotkeys = [advance, previous, reset, toggle_visibility];
+    for hk in &hotkeys {
+        let _ = manager.unregister(*hk);
+    }
+
+    for hk in &hotkeys {
+        if let Err(e) = manager.register(*hk) {
+            warn!("Failed to register hotkey {:?}: {}", hk, e);
+        }
+    }
 
     let ids = HotkeyIds {
         advance: advance.id(),
