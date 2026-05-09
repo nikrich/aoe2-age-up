@@ -8,6 +8,7 @@
     "core:window:allow-start-dragging",
     "core:window:allow-set-ignore-cursor-events",
     "core:window:allow-set-size",
+    "core:window:allow-set-position",
     "shell:allow-open",
     "shell:allow-execute",
     "core:window:allow-close"

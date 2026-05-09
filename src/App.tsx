@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { getCurrentWindow } from "@tauri-apps/api/window";
-import { LogicalSize } from "@tauri-apps/api/dpi";
+import { currentMonitor, getCurrentWindow } from "@tauri-apps/api/window";
+import { LogicalPosition, LogicalSize } from "@tauri-apps/api/dpi";
 import { Overlay } from "./components/Overlay";
 import { PeekOverlay } from "./components/PeekOverlay";
 import { BuildOrderLibrary } from "./components/BuildOrderLibrary";
@@ -15,6 +15,18 @@ type View = "run" | "library" | "calibration" | "settings";
 const MIN_W = 200;
 const MIN_H = 40;
 
+// Calibration view layout — fixed window size, centered horizontally on the
+// active monitor with a top margin so the game's resource bar stays visible.
+const CAL_WIN_W = 1200;
+const CAL_WIN_H = 720;
+const CAL_TOP_MARGIN = 120;
+
+// localStorage key for the user's preferred overlay position (logical px).
+// Only saved when *not* in Calibration mode so Cal's snap-to-center doesn't
+// poison the persisted position.
+const POSITION_STORAGE_KEY = "open-age:overlay-pos";
+const POSITION_SAVE_DEBOUNCE_MS = 400;
+
 function App() {
   const [view, setView] = useState<View>("run");
   const [buildOrder, setBuildOrder] = useState<BuildOrder | null>(null);
@@ -26,6 +38,96 @@ function App() {
     window.addEventListener("contextmenu", handler);
     return () => window.removeEventListener("contextmenu", handler);
   }, []);
+
+  // Restore the user's last overlay position on startup.
+  useEffect(() => {
+    const saved = localStorage.getItem(POSITION_STORAGE_KEY);
+    if (!saved) return;
+    try {
+      const { x, y } = JSON.parse(saved);
+      if (typeof x !== "number" || typeof y !== "number") return;
+      getCurrentWindow()
+        .setPosition(new LogicalPosition(x, y))
+        .catch((e) => console.error("Restore startup position failed:", e));
+    } catch (e) {
+      console.error("Bad saved position:", e);
+    }
+  }, []);
+
+  // Persist the overlay position whenever the user moves the window — but skip
+  // moves that happen while in Cal (it snap-centers and shouldn't overwrite
+  // the user's preferred overlay spot).
+  const viewRef = useRef<View>(view);
+  viewRef.current = view;
+  useEffect(() => {
+    const win = getCurrentWindow();
+    let timer: number | null = null;
+    const unlistenP = win.onMoved(async ({ payload }) => {
+      if (viewRef.current === "calibration") return;
+      if (timer) window.clearTimeout(timer);
+      timer = window.setTimeout(async () => {
+        try {
+          const monitor = await currentMonitor();
+          const scale = monitor?.scaleFactor ?? 1;
+          const x = payload.x / scale;
+          const y = payload.y / scale;
+          localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify({ x, y }));
+        } catch (e) {
+          console.error("Save overlay position failed:", e);
+        }
+      }, POSITION_SAVE_DEBOUNCE_MS);
+    });
+    return () => {
+      unlistenP.then((f) => f()).catch(() => {});
+      if (timer) window.clearTimeout(timer);
+    };
+  }, []);
+
+  // Snap-to-center on Cal entry; restore the prior overlay position on exit.
+  // Size is also handled here (in addition to the auto-resize observer) so the
+  // window expands immediately rather than waiting on the next layout cycle.
+  const savedOverlayPosRef = useRef<LogicalPosition | null>(null);
+  const prevViewRef = useRef<View>("run");
+  useEffect(() => {
+    const win = getCurrentWindow();
+    const prev = prevViewRef.current;
+    prevViewRef.current = view;
+    if (prev === view) return;
+
+    if (view === "calibration") {
+      (async () => {
+        try {
+          const physicalPos = await win.outerPosition();
+          const monitor = await currentMonitor();
+          const scale = monitor?.scaleFactor ?? 1;
+          // Save the overlay's position in logical px so we can restore it later.
+          savedOverlayPosRef.current = new LogicalPosition(
+            physicalPos.x / scale,
+            physicalPos.y / scale,
+          );
+
+          if (monitor) {
+            const monitorLogicalW = monitor.size.width / scale;
+            const monitorLogicalX = monitor.position.x / scale;
+            const monitorLogicalY = monitor.position.y / scale;
+            const x = monitorLogicalX + Math.max(0, (monitorLogicalW - CAL_WIN_W) / 2);
+            const y = monitorLogicalY + CAL_TOP_MARGIN;
+            await win.setSize(new LogicalSize(CAL_WIN_W, CAL_WIN_H));
+            await win.setPosition(new LogicalPosition(x, y));
+            // Sync the ResizeObserver's last-size cache so it doesn't fight us.
+            lastSizeRef.current = { w: CAL_WIN_W, h: CAL_WIN_H };
+          }
+        } catch (e) {
+          console.error("Cal snap failed:", e);
+        }
+      })();
+    } else if (prev === "calibration" && savedOverlayPosRef.current) {
+      // Leaving Cal — restore overlay position. Size is handled by auto-resize.
+      const target = savedOverlayPosRef.current;
+      win.setPosition(target).catch((e) => console.error("Restore pos failed:", e));
+      savedOverlayPosRef.current = null;
+    }
+  }, [view]);
 
   // Resize the OS window to match the rendered content. Without this, the
   // window stays at its initial 320x480 and the empty area below the visible

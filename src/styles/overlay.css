@@ -90,7 +90,20 @@ html, body, #root {
 }
 
 .app-content.wide {
-  width: 840px;
+  width: 1200px;
+  height: 720px;
+}
+/* In wide (Cal) mode, let the body + calibration view fill the remaining
+   height below the title bar so the canvas + sidebar use the whole window. */
+.app-content.wide .view-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.app-content.wide .calibration {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .titlebar {

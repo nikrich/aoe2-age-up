@@ -14,11 +14,12 @@ const REGION_ORDER: Array<{ key: string; label: string }> = [
   { key: "GameTime", label: "Game time" },
 ];
 
-// Visible viewport (the scroll container).
-const CANVAS_VIEWPORT_WIDTH = 520;
-const CANVAS_VIEWPORT_HEIGHT = 320;
+// Visible viewport (the scroll container). Sized to fill the wide Cal window
+// (1200 wide; ~860 canvas + ~310 sidebar + padding/gap).
+const CANVAS_VIEWPORT_WIDTH = 860;
+const CANVAS_VIEWPORT_HEIGHT = 600;
 // How many CSS pixels per native pixel. Higher = bigger regions, more scroll.
-const ZOOM = 2.5;
+const ZOOM = 2.0;
 const MIN_REGION_PX = 8; // native px
 
 type Handle = "tl" | "tr" | "bl" | "br" | "body";
