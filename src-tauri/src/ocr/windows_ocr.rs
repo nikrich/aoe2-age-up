@@ -17,6 +17,19 @@ pub struct TesseractPipeline {
 
 impl TesseractPipeline {
     pub fn new(tesseract_path: PathBuf, tessdata_path: PathBuf, deps_dir: PathBuf) -> Result<Self> {
+        // Strip \\?\ prefix that Tauri's resource_dir() adds — Tesseract can't handle it
+        let strip_prefix = |p: PathBuf| -> PathBuf {
+            let s = p.to_string_lossy();
+            if let Some(stripped) = s.strip_prefix(r"\\?\") {
+                PathBuf::from(stripped)
+            } else {
+                p
+            }
+        };
+        let tesseract_path = strip_prefix(tesseract_path);
+        let tessdata_path = strip_prefix(tessdata_path);
+        let deps_dir = strip_prefix(deps_dir);
+
         debug!("Tesseract binary: {:?}", tesseract_path);
         debug!("Tessdata dir: {:?}", tessdata_path);
         debug!("Deps dir: {:?}", deps_dir);
@@ -42,15 +55,19 @@ impl TesseractPipeline {
         let rgba = RgbaImage::from_raw(width, height, image.to_vec())
             .context("Invalid RGBA image data")?;
 
+        // Preprocess: grayscale → threshold → invert to get dark text on white background
+        let gray = super::preprocess::to_grayscale(&rgba);
+        let binary = super::preprocess::threshold(&gray, 160);
+
         // Upscale small images for better accuracy
         let scale = if width < 200 { (200 / width).max(4) } else { 1 };
         let img = if scale > 1 {
             let new_w = width * scale;
             let new_h = height * scale;
-            let scaled = image::imageops::resize(&rgba, new_w, new_h, image::imageops::FilterType::Lanczos3);
-            image::DynamicImage::ImageRgba8(scaled)
+            let scaled = image::imageops::resize(&binary, new_w, new_h, image::imageops::FilterType::Lanczos3);
+            image::DynamicImage::ImageLuma8(scaled)
         } else {
-            image::DynamicImage::ImageRgba8(rgba)
+            image::DynamicImage::ImageLuma8(binary)
         };
 
         // Write PNG to temp file (tesseract reads from file)
@@ -71,6 +88,10 @@ impl TesseractPipeline {
             .context("Failed to run tesseract")?;
 
         let text = String::from_utf8_lossy(&output.stdout).trim().to_string();
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        if !stderr.is_empty() {
+            debug!("Tesseract stderr: {}", stderr.trim());
+        }
 
         if !text.is_empty() {
             debug!("Tesseract recognized: \"{}\" ({}x{}, scale {}x)", text, width, height, scale);

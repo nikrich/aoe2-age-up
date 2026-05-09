@@ -8,8 +8,9 @@ use crate::build_order::{BuildOrder, BuildOrderMeta, Step};
 use crate::error::AppError;
 use crate::capture::fallback::XcapCapture;
 use crate::capture::loop_task::spawn_capture_loop;
+use crate::capture::CaptureBackend;
 use crate::ocr::windows_ocr::TesseractPipeline;
-use crate::state::{AppState, Calibration, CaptureHandle, Settings};
+use crate::state::{AppState, Calibration, CaptureHandle, RegionKind, Settings};
 use crate::storage::Storage;
 
 #[derive(Clone, Serialize)]
@@ -189,4 +190,62 @@ pub fn stop_capture(
     }
 
     Ok(())
+}
+
+#[tauri::command]
+pub fn generate_calibration_image(
+    state: State<Mutex<AppState>>,
+) -> Result<String, AppError> {
+    let regions = {
+        let s = state.lock().unwrap();
+        s.calibration.regions.clone()
+    };
+
+    let mut backend = XcapCapture::new()
+        .map_err(|e| AppError::Capture(e.to_string()))?;
+    let frame = backend.next_frame()
+        .map_err(|e| AppError::Capture(e.to_string()))?;
+
+    let mut img = image::RgbaImage::from_raw(frame.width, frame.height, frame.data)
+        .ok_or_else(|| AppError::Capture("Invalid frame data".to_string()))?;
+
+    // Draw rectangles for each calibration region
+    let colors: Vec<(RegionKind, [u8; 4])> = vec![
+        (RegionKind::Food, [255, 0, 0, 255]),       // Red
+        (RegionKind::Wood, [0, 255, 0, 255]),        // Green
+        (RegionKind::Gold, [255, 255, 0, 255]),      // Yellow
+        (RegionKind::Stone, [128, 128, 128, 255]),   // Gray
+        (RegionKind::Villagers, [0, 255, 255, 255]), // Cyan
+        (RegionKind::Population, [255, 0, 255, 255]),// Magenta
+        (RegionKind::GameTime, [255, 128, 0, 255]),  // Orange
+    ];
+
+    for (kind, color) in &colors {
+        if let Some(region) = regions.get(kind) {
+            let pixel = image::Rgba(*color);
+            let x1 = region.x;
+            let y1 = region.y;
+            let x2 = (region.x + region.width).min(frame.width - 1);
+            let y2 = (region.y + region.height).min(frame.height - 1);
+
+            // Draw top and bottom edges
+            for x in x1..=x2 {
+                img.put_pixel(x, y1, pixel);
+                img.put_pixel(x, y2, pixel);
+            }
+            // Draw left and right edges
+            for y in y1..=y2 {
+                img.put_pixel(x1, y, pixel);
+                img.put_pixel(x2, y, pixel);
+            }
+        }
+    }
+
+    let out_path = std::env::temp_dir().join("aoe_calibration.png");
+    img.save(&out_path)
+        .map_err(|e| AppError::Capture(format!("Failed to save calibration image: {}", e)))?;
+
+    let path_str = out_path.to_string_lossy().to_string();
+    tracing::info!("Calibration image saved to {}", path_str);
+    Ok(path_str)
 }
