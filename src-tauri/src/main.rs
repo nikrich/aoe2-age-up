@@ -57,6 +57,7 @@ fn main() {
             ipc::get_calibration,
             ipc::start_capture,
             ipc::stop_capture,
+            ipc::generate_calibration_image,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
