@@ -14,8 +14,11 @@
 
 A lightweight, transparent, always-on-top desktop overlay that helps players learn and execute build orders in Age of Empires II: Definitive Edition.
 
-<img width="382" height="432" alt="image" src="https://github.com/user-attachments/assets/afe6c8f1-d6ec-4cc1-bd18-4513ec279ed8" />
-<img width="369" height="694" alt="image" src="https://github.com/user-attachments/assets/049c4add-752b-4ec4-b160-ce05efd1c89f" />
+<p align="center">
+  <img width="320" alt="Open Age — Run tab" src="https://github.com/user-attachments/assets/afe6c8f1-d6ec-4cc1-bd18-4513ec279ed8" />
+  &nbsp;
+  <img width="320" alt="Open Age — Library tab" src="https://github.com/user-attachments/assets/049c4add-752b-4ec4-b160-ce05efd1c89f" />
+</p>
 
 
 Open Age reads game state from the screen via OCR (no memory injection, no anti-cheat risk) and either auto-advances build order steps based on resource/villager/time triggers, or allows manual advancement via global hotkey.
