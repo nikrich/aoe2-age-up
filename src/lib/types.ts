@@ -1,3 +1,6 @@
+export type Difficulty = "beginner" | "intermediate" | "advanced";
+export type Phase = "dark" | "feudal" | "castle" | "imperial";
+
 export interface BuildOrder {
   id: string;
   name: string;
@@ -6,6 +9,8 @@ export interface BuildOrder {
   description?: string;
   source_url?: string;
   tags: string[];
+  difficulty?: Difficulty;
+  glyph?: string;
   steps: Step[];
 }
 
@@ -14,6 +19,8 @@ export interface Step {
   at: Trigger;
   notes?: string;
   villagers_assigned?: VillagerAssignment;
+  target_time_seconds?: number;
+  phase?: Phase;
 }
 
 export interface Trigger {
@@ -41,6 +48,8 @@ export interface BuildOrderMeta {
   civilization: string;
   tags: string[];
   description?: string;
+  difficulty?: Difficulty;
+  glyph?: string;
   path: string;
 }
 

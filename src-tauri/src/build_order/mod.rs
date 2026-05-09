@@ -16,6 +16,10 @@ pub struct BuildOrder {
     pub source_url: Option<String>,
     #[serde(default)]
     pub tags: Vec<String>,
+    #[serde(default)]
+    pub difficulty: Option<Difficulty>,
+    #[serde(default)]
+    pub glyph: Option<String>,
     pub steps: Vec<Step>,
 }
 
@@ -27,9 +31,28 @@ impl BuildOrder {
             civilization: self.civilization.clone(),
             tags: self.tags.clone(),
             description: self.description.clone(),
+            difficulty: self.difficulty,
+            glyph: self.glyph.clone(),
             path: path.to_string(),
         }
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Difficulty {
+    Beginner,
+    Intermediate,
+    Advanced,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Phase {
+    Dark,
+    Feudal,
+    Castle,
+    Imperial,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -40,6 +63,12 @@ pub struct Step {
     pub notes: Option<String>,
     #[serde(default)]
     pub villagers_assigned: Option<VillagerAssignment>,
+    /// Display-time target for this step (seconds). Used to render "elapsed / target" delta.
+    #[serde(default)]
+    pub target_time_seconds: Option<u32>,
+    /// Age phase this step belongs to. Used for timeline phase coloring.
+    #[serde(default)]
+    pub phase: Option<Phase>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -103,5 +132,7 @@ pub struct BuildOrderMeta {
     pub civilization: String,
     pub tags: Vec<String>,
     pub description: Option<String>,
+    pub difficulty: Option<Difficulty>,
+    pub glyph: Option<String>,
     pub path: String,
 }

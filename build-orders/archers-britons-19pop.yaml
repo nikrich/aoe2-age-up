@@ -1,0 +1,52 @@
+id: archers-britons-19pop
+name: "19pop Fast Archers (Britons)"
+civilization: Britons
+author: lnz
+description: "Very fast Feudal time using the Britons' sheep bonus, into faster-producing Ranges and longer-range Archers for an early advantage."
+tags: [archers, feudal-aggression, britons, fast-feudal]
+
+steps:
+  - action: "2 houses, then all 3 vills to sheep; queue villagers"
+    at: { time_seconds: 0 }
+    villagers_assigned: { food: 3, wood: 0, gold: 0, stone: 0, idle: 0 }
+  - action: "5 on sheep"
+    at: { villagers: 5 }
+    villagers_assigned: { food: 5, wood: 0, gold: 0, stone: 0, idle: 0 }
+  - action: "Build lumber camp, 2 on wood"
+    at: { villagers: 7 }
+    villagers_assigned: { food: 5, wood: 2, gold: 0, stone: 0, idle: 0 }
+  - action: "Lure first boar"
+    at: { villagers: 8 }
+    notes: "Garrison the lurer in TC after a single shot. Don't let the boar rot."
+    villagers_assigned: { food: 6, wood: 2, gold: 0, stone: 0, idle: 0 }
+  - action: "+3 on sheep/boar"
+    at: { villagers: 11 }
+    notes: "Push 2 deer here if you can — recommended."
+    villagers_assigned: { food: 9, wood: 2, gold: 0, stone: 0, idle: 0 }
+  - action: "House, mill on berries, 2 to berries"
+    at: { villagers: 13 }
+    villagers_assigned: { food: 11, wood: 2, gold: 0, stone: 0, idle: 0 }
+  - action: "Lure second boar; +2 to sheep/boar"
+    at: { villagers: 15 }
+    notes: "Lure 2nd boar at ~150 food left on the 1st. Take sheep in groups of ~5 if boar runs out."
+    villagers_assigned: { food: 13, wood: 2, gold: 0, stone: 0, idle: 0 }
+  - action: "+2 to wood"
+    at: { villagers: 17 }
+    villagers_assigned: { food: 13, wood: 4, gold: 0, stone: 0, idle: 0 }
+  - action: "Mining camp + 1 on gold, research Loom, click Feudal Age"
+    at: { villagers: 18 }
+    notes: "Take 7 vills off sheep and send them to wood. Before 60% to Feudal, build Barracks, then a House."
+    villagers_assigned: { food: 6, wood: 11, gold: 1, stone: 0, idle: 0 }
+  - action: "In Feudal: 2 vills build Archery Range; research Double-Bit Axe and Horse Collar"
+    at: { villagers: 19 }
+    notes: "Keep queuing villagers from the TC."
+  - action: "Up to 5 on gold"
+    at: { villagers: 22 }
+    notes: "If you didn't push deer earlier, send your shepherds to berries."
+    villagers_assigned: { food: 11, wood: 11, gold: 5, stone: 0, idle: 0 }
+  - action: "2 vills to farms"
+    at: { villagers: 24 }
+    notes: "Keep adding farms as wood comes in, and houses as needed."
+  - action: "Build Blacksmith, research Fletching, build 2nd Lumber Camp, move out"
+    at: { villagers: 25 }
+    notes: "8 archers with Fletching can two-shot a villager. Send extra vills to wood."
