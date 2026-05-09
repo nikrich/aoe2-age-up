@@ -80,13 +80,17 @@ html, body, #root {
 .app-content {
   display: flex;
   flex-direction: column;
-  /* Fixed width so views (Library, Calibration) all match the overlay's
-     design width instead of dragging the window down to their natural size. */
+  /* Default width matches the overlay's design width. Wider views opt in
+     by adding a modifier class (e.g. .app-content.wide for Calibration). */
   width: 320px;
   background: transparent;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+}
+
+.app-content.wide {
+  width: 840px;
 }
 
 .titlebar {
@@ -718,6 +722,100 @@ html, body, #root {
   flex-direction: column;
   gap: 10px;
   padding: 12px;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+}
+.cal-viewport {
+  position: relative;
+  background: #1a2515;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: auto;
+  user-select: none;
+  touch-action: none;
+}
+.cal-canvas {
+  position: relative;
+  /* Inner zoomed surface — sized larger than the viewport so the user can
+     scroll, with the regions rendered at usable px sizes (see ZOOM in tsx). */
+}
+.cal-shot {
+  display: block;
+  pointer-events: none;
+  /* Keep zoomed pixels sharp instead of bilinear-blurry. */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+.cal-shot-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  text-align: center;
+  padding: 16px;
+}
+.cal-region {
+  position: absolute;
+  border: 1.5px dashed var(--accent);
+  background: rgba(255, 184, 77, 0.08);
+  border-radius: 2px;
+  cursor: move;
+  box-sizing: border-box;
+}
+.cal-region.active {
+  border-style: solid;
+  background: rgba(255, 184, 77, 0.18);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+.cal-region .lbl {
+  position: absolute;
+  top: -16px;
+  left: 0;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 1px 4px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  color: var(--accent);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+.cal-region .handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border: 1.5px solid var(--bg-solid-3);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 3;
+}
+.cal-region .handle.tl { top: -7px; left: -7px; cursor: nwse-resize; }
+.cal-region .handle.tr { top: -7px; right: -7px; cursor: nesw-resize; }
+.cal-region .handle.bl { bottom: -7px; left: -7px; cursor: nesw-resize; }
+.cal-region .handle.br { bottom: -7px; right: -7px; cursor: nwse-resize; }
+
+.cal-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.cal-info {
+  font-size: 11px;
+  color: var(--resource-wood);
+  font-family: var(--font-mono);
+  padding: 4px 0;
 }
 .cal-header {
   display: flex;

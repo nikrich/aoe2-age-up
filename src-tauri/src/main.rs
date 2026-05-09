@@ -101,6 +101,8 @@ fn main() {
             ipc::start_capture,
             ipc::stop_capture,
             ipc::generate_calibration_image,
+            ipc::capture_calibration_screenshot,
+            ipc::set_calibration,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
