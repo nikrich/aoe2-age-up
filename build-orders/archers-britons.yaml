@@ -4,34 +4,56 @@ civilization: Britons
 author: Community
 description: "22 pop flush into archers. Britons get +1 range in Castle Age."
 tags: [archers, feudal-aggression, britons]
+difficulty: beginner
+glyph: ARC
 
 steps:
   - action: "6 vills on sheep"
     at: { time_seconds: 0 }
+    target_time_seconds: 0
+    phase: dark
     villagers_assigned: { food: 6, wood: 0, gold: 0, stone: 0, idle: 0 }
   - action: "4 vills to wood (lumber camp)"
     at: { villagers: 6 }
+    target_time_seconds: 120
+    phase: dark
     villagers_assigned: { food: 6, wood: 4, gold: 0, stone: 0, idle: 0 }
   - action: "Lure boar, next vill to berries (build mill)"
     at: { villagers: 10 }
+    target_time_seconds: 240
+    phase: dark
   - action: "3 more vills to berries"
     at: { villagers: 11 }
+    target_time_seconds: 330
+    phase: dark
     villagers_assigned: { food: 10, wood: 4, gold: 0, stone: 0, idle: 0 }
   - action: "Lure second boar, 3 vills to gold (mining camp)"
     at: { villagers: 14 }
+    target_time_seconds: 450
+    phase: dark
     villagers_assigned: { food: 10, wood: 4, gold: 3, stone: 0, idle: 0 }
   - action: "2 more vills to wood, build house"
     at: { villagers: 17 }
+    target_time_seconds: 540
+    phase: dark
     villagers_assigned: { food: 10, wood: 6, gold: 3, stone: 0, idle: 0 }
   - action: "2 vills to farms"
     at: { villagers: 19 }
+    target_time_seconds: 600
+    phase: dark
     villagers_assigned: { food: 12, wood: 6, gold: 3, stone: 0, idle: 0 }
   - action: "Click up to Feudal Age"
     at: { villagers: 21 }
+    target_time_seconds: 660
+    phase: dark
     notes: "Build barracks with one of the wood villagers while advancing."
   - action: "Build 2 archery ranges in Feudal"
     at: { time_seconds: 660 }
+    target_time_seconds: 780
+    phase: feudal
     notes: "Non-stop archer production. Research fletching."
   - action: "Send archers across the map"
     at: { time_seconds: 780 }
+    target_time_seconds: 900
+    phase: feudal
     notes: "Target enemy woodlines and gold miners."

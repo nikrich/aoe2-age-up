@@ -4,37 +4,61 @@ civilization: Generic
 author: Community
 description: "Standard 21+2 pop scout rush. Works for most cavalry civs."
 tags: [scouts, feudal-aggression, beginner-friendly]
+difficulty: beginner
+glyph: SCT
 
 steps:
   - action: "6 vills on sheep, 1 vill builds house then to sheep"
     at: { time_seconds: 0 }
+    target_time_seconds: 0
+    phase: dark
     villagers_assigned: { food: 7, wood: 0, gold: 0, stone: 0, idle: 0 }
   - action: "Next 3 vills to sheep under TC"
     at: { villagers: 10 }
+    target_time_seconds: 240
+    phase: dark
     villagers_assigned: { food: 10, wood: 0, gold: 0, stone: 0, idle: 0 }
   - action: "4 vills to wood (build lumber camp)"
     at: { villagers: 11 }
+    target_time_seconds: 300
+    phase: dark
     notes: "Send to the closest woodline. Build a lumber camp."
     villagers_assigned: { food: 10, wood: 4, gold: 0, stone: 0, idle: 0 }
   - action: "Lure first boar"
     at: { villagers: 14 }
+    target_time_seconds: 360
+    phase: dark
     notes: "Shoot boar once with a villager, then garrison in TC. Don't let boar rot."
   - action: "Build mill on berries, 3 vills to berries"
     at: { villagers: 15 }
+    target_time_seconds: 420
+    phase: dark
     villagers_assigned: { food: 11, wood: 4, gold: 0, stone: 0, idle: 0 }
   - action: "Lure second boar"
     at: { villagers: 17 }
+    target_time_seconds: 480
+    phase: dark
   - action: "2 more vills to wood"
     at: { villagers: 19 }
+    target_time_seconds: 540
+    phase: dark
     villagers_assigned: { food: 11, wood: 6, gold: 0, stone: 0, idle: 0 }
   - action: "Build second house, 2 vills to farms"
     at: { villagers: 20 }
+    target_time_seconds: 570
+    phase: dark
   - action: "Click up to Feudal Age"
     at: { villagers: 21, food_min: 500 }
+    target_time_seconds: 600
+    phase: dark
     notes: "While advancing: send 2 sheep vills to wood."
   - action: "Build barracks while advancing"
     at: { time_seconds: 600 }
+    target_time_seconds: 660
+    phase: dark
     notes: "Use a villager that finished a farm."
   - action: "Build stable immediately in Feudal"
     at: { time_seconds: 720 }
+    target_time_seconds: 720
+    phase: feudal
     notes: "Start producing scouts. Keep making farms."
