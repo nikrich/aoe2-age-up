@@ -4,8 +4,14 @@ use std::path::PathBuf;
 use std::process::Command;
 use tracing::{debug, warn};
 
+#[cfg(target_os = "windows")]
+use std::os::windows::process::CommandExt;
+
 use crate::state::RegionKind;
 use super::OcrPipeline;
+
+#[cfg(target_os = "windows")]
+const CREATE_NO_WINDOW: u32 = 0x08000000;
 
 /// OCR backend using Tesseract CLI (bundled with the app).
 pub struct TesseractPipeline {
@@ -38,11 +44,13 @@ impl TesseractPipeline {
         let path_env = build_path_with_deps(&deps_dir);
 
         // Verify tesseract is accessible
-        let output = Command::new(&tesseract_path)
-            .arg("--version")
+        let mut cmd = Command::new(&tesseract_path);
+        cmd.arg("--version")
             .env("TESSDATA_PREFIX", &tessdata_path)
-            .env("PATH", &path_env)
-            .output()
+            .env("PATH", &path_env);
+        #[cfg(target_os = "windows")]
+        cmd.creation_flags(CREATE_NO_WINDOW);
+        let output = cmd.output()
             .context("Failed to find tesseract. Is it installed?")?;
 
         let version = String::from_utf8_lossy(&output.stdout);
@@ -76,15 +84,17 @@ impl TesseractPipeline {
 
         let path_env = build_path_with_deps(&self.deps_dir);
 
-        let output = Command::new(&self.tesseract_path)
-            .arg(tmp.to_str().unwrap())
+        let mut cmd = Command::new(&self.tesseract_path);
+        cmd.arg(tmp.to_str().unwrap())
             .arg("stdout")
             .arg("--psm").arg("7") // Single line of text
             .arg("-c").arg("tessedit_char_whitelist=0123456789:/")
             .arg("-l").arg("eng")
             .env("TESSDATA_PREFIX", &self.tessdata_path)
-            .env("PATH", &path_env)
-            .output()
+            .env("PATH", &path_env);
+        #[cfg(target_os = "windows")]
+        cmd.creation_flags(CREATE_NO_WINDOW);
+        let output = cmd.output()
             .context("Failed to run tesseract")?;
 
         let text = String::from_utf8_lossy(&output.stdout).trim().to_string();
