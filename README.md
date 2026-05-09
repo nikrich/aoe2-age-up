@@ -1,10 +1,16 @@
-# Open Age
+<p align="center">
+  <img src="src/assets/hero.png" alt="Open Age logo" width="160" />
+</p>
 
-[![Release](https://github.com/nikrich/open-age/actions/workflows/release.yml/badge.svg)](https://github.com/nikrich/open-age/actions/workflows/release.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/nikrich/open-age/releases)
-[![Rust](https://img.shields.io/badge/rust-1.75%2B-orange.svg)](https://www.rust-lang.org/)
-[![Tauri](https://img.shields.io/badge/tauri-2.0-24C8D8.svg)](https://tauri.app/)
+<h1 align="center">Open Age</h1>
+
+<p align="center">
+  <a href="https://github.com/nikrich/open-age/actions/workflows/release.yml"><img src="https://github.com/nikrich/open-age/actions/workflows/release.yml/badge.svg" alt="Release" /></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
+  <a href="https://github.com/nikrich/open-age/releases"><img src="https://img.shields.io/badge/version-0.1.0-blue.svg" alt="Version" /></a>
+  <a href="https://www.rust-lang.org/"><img src="https://img.shields.io/badge/rust-1.75%2B-orange.svg" alt="Rust" /></a>
+  <a href="https://tauri.app/"><img src="https://img.shields.io/badge/tauri-2.0-24C8D8.svg" alt="Tauri" /></a>
+</p>
 
 A lightweight, transparent, always-on-top desktop overlay that helps players learn and execute build orders in Age of Empires II: Definitive Edition.
 
@@ -28,7 +34,11 @@ Open Age reads game state from the screen via OCR (no memory injection, no anti-
 
 ## Screenshots
 
-*Coming soon*
+<p align="center">
+  <img src="docs/aoe.png" alt="Open Age overlay running alongside Age of Empires II: Definitive Edition" width="760" />
+</p>
+
+<p align="center"><sub>The overlay sits in the top-right corner of AoE2:DE — current step highlighted, next step queued, no focus stealing.</sub></p>
 
 ## Installation
 
