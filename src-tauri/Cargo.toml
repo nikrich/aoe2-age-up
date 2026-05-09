@@ -1,6 +1,6 @@
 [package]
 name = "aoe-overlay"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 
 [build-dependencies]
@@ -22,6 +22,7 @@ uuid = { version = "1", features = ["v4", "serde"] }
 xcap = "0.0.14"
 image = { version = "0.25", default-features = false, features = ["png", "bmp"] }
 imageproc = "0.25"
+base64 = "0.22"
 windows = { version = "0.61", features = [
     "Media_Ocr",
     "Graphics_Imaging",

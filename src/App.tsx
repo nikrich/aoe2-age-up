@@ -79,9 +79,11 @@ function App() {
     );
   }
 
+  const wide = view === "calibration";
+
   return (
     <div className="app">
-      <div ref={contentRef} className="app-content">
+      <div ref={contentRef} className={`app-content${wide ? " wide" : ""}`}>
         <div className="titlebar" data-tauri-drag-region>
           <span className="drag-dots"><span /><span /><span /></span>
           <span className="brand"><span className="dot" />Open Age</span>

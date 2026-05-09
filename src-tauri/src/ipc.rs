@@ -199,6 +199,47 @@ pub fn stop_capture(
     Ok(())
 }
 
+/// Capture a clean screenshot (no rectangles drawn) and return it as a base64
+/// data URI for the frontend to use as a calibration canvas backdrop.
+#[tauri::command]
+pub fn capture_calibration_screenshot() -> Result<String, AppError> {
+    use base64::Engine;
+
+    let mut backend = XcapCapture::new()
+        .map_err(|e| AppError::Capture(e.to_string()))?;
+    let frame = backend.next_frame()
+        .map_err(|e| AppError::Capture(e.to_string()))?;
+
+    let img = image::RgbaImage::from_raw(frame.width, frame.height, frame.data)
+        .ok_or_else(|| AppError::Capture("Invalid frame data".to_string()))?;
+
+    let mut buf: Vec<u8> = Vec::with_capacity(1 << 20);
+    image::DynamicImage::ImageRgba8(img)
+        .write_to(&mut std::io::Cursor::new(&mut buf), image::ImageFormat::Png)
+        .map_err(|e| AppError::Capture(format!("Failed to encode PNG: {}", e)))?;
+
+    let b64 = base64::engine::general_purpose::STANDARD.encode(&buf);
+    Ok(format!("data:image/png;base64,{}", b64))
+}
+
+/// Replace the active calibration with the supplied one and persist it.
+/// The capture loop reads regions per frame, so updates apply on the next OCR cycle.
+#[tauri::command]
+pub fn set_calibration(
+    calibration: Calibration,
+    state: State<Mutex<AppState>>,
+    storage: State<Storage>,
+) -> Result<(), AppError> {
+    {
+        let mut s = state.lock().unwrap();
+        s.calibration = calibration.clone();
+    }
+    storage
+        .save_calibration(&calibration)
+        .map_err(|e| AppError::Storage(std::io::Error::new(std::io::ErrorKind::Other, e.to_string())))?;
+    Ok(())
+}
+
 #[tauri::command]
 pub fn generate_calibration_image(
     state: State<Mutex<AppState>>,
