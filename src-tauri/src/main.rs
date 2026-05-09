@@ -15,10 +15,53 @@ mod storage;
 use state::{AppState, CaptureHandle};
 use storage::Storage;
 
-fn main() {
+fn setup_logging() {
+    use tracing_subscriber::fmt::writer::MakeWriterExt;
+
+    // In release mode, log to a file in the user's temp dir so we can diagnose crashes
+    if cfg!(not(debug_assertions)) {
+        let log_path = std::env::temp_dir().join("aoe-overlay.log");
+        let file = std::fs::OpenOptions::new()
+            .create(true)
+            .write(true)
+            .truncate(true)
+            .open(&log_path);
+
+        if let Ok(file) = file {
+            tracing_subscriber::fmt()
+                .with_env_filter("aoe_overlay=debug")
+                .with_writer(std::io::stderr.and(file))
+                .with_ansi(false)
+                .init();
+            return;
+        }
+    }
+
     tracing_subscriber::fmt()
         .with_env_filter("aoe_overlay=debug")
         .init();
+}
+
+fn setup_panic_hook() {
+    let default_hook = std::panic::take_hook();
+    std::panic::set_hook(Box::new(move |info| {
+        let log_path = std::env::temp_dir().join("aoe-overlay-crash.log");
+        let msg = format!("PANIC: {}\nLocation: {:?}\n", info, info.location());
+        let _ = std::fs::write(&log_path, &msg);
+        // Also append to the main log
+        let main_log = std::env::temp_dir().join("aoe-overlay.log");
+        let _ = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(&main_log)
+            .and_then(|mut f| std::io::Write::write_all(&mut f, msg.as_bytes()));
+        default_hook(info);
+    }));
+}
+
+fn main() {
+    setup_panic_hook();
+    setup_logging();
 
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())

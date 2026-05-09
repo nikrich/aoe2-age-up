@@ -19,9 +19,10 @@ html, body, #root {
   color: var(--text-primary);
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
+  pointer-events: none;
 }
 
-.app { height: 100%; display: flex; flex-direction: column; }
+.app { height: 100%; display: flex; flex-direction: column; pointer-events: none; }
 
 .overlay {
   padding: 12px;
@@ -31,6 +32,7 @@ html, body, #root {
   background: var(--bg-primary);
   border-radius: 8px;
   border: 1px solid var(--border);
+  pointer-events: auto;
 }
 
 .overlay-header {
@@ -109,6 +111,7 @@ html, body, #root {
   padding: 40px 20px;
   text-align: center;
   color: var(--text-secondary);
+  pointer-events: auto;
 }
 
 .library {
@@ -118,6 +121,7 @@ html, body, #root {
   border: 1px solid var(--border);
   overflow-y: auto;
   max-height: 100%;
+  pointer-events: auto;
 }
 
 .library-header { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
@@ -156,6 +160,7 @@ html, body, #root {
   padding: 8px 12px;
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border);
+  pointer-events: auto;
 }
 
 .view-btn {
@@ -181,6 +186,7 @@ html, body, #root {
   background: var(--bg-primary);
   border-radius: 8px;
   border: 1px solid var(--border);
+  pointer-events: auto;
 }
 
 .settings-header { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
