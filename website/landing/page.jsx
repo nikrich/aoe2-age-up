@@ -1,4 +1,4 @@
-// Open Age — landing page sections.
+// Age Up — landing page sections.
 // Imports OverlayDemo and renders the full marketing layout.
 
 const SOCIAL_ICON = (id) => (
@@ -11,7 +11,7 @@ function Logo({ size = 24 }) {
   return (
     <span className="logo">
       <img src="landing/assets/logo.svg" alt="" width={size} height={size} />
-      <span>Open Age</span>
+      <span>Age Up</span>
     </span>
   );
 }
@@ -54,7 +54,7 @@ function Hero() {
             Run your build order <span className="accent">without leaving the game.</span>
           </h1>
           <p className="hero__lede">
-            Open Age is a transparent, always-on-top desktop overlay for <strong>Age of Empires II: Definitive Edition</strong>. It walks you through any YAML build order step-by-step — and reads the game with OCR, so you don't have to.
+            Age Up is a transparent, always-on-top desktop overlay for <strong>Age of Empires II: Definitive Edition</strong>. It walks you through any YAML build order step-by-step — and reads the game with OCR, so you don't have to.
           </p>
           <div className="hero__cta">
             <a href="#download" className="btn btn--primary">
@@ -120,7 +120,7 @@ function Features() {
     },
     {
       title: "OCR, not memory injection",
-      desc: "Open Age reads the resource bar by screen-capture + Tesseract. No DLL hooks, no detection vectors, no TOS risk.",
+      desc: "Age Up reads the resource bar by screen-capture + Tesseract. No DLL hooks, no detection vectors, no TOS risk.",
       icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.3-4.3"/></svg>
     },
     {
@@ -149,7 +149,7 @@ function Features() {
       <span className="eyebrow">Features</span>
       <h2 className="section-title">A coach standing <em>behind your shoulder.</em></h2>
       <p className="section-sub">
-        Six things the overlay does well. Each is a deliberate constraint — Open Age is a single-purpose tool, not a launcher, not a tracker, not a coach AI.
+        Six things the overlay does well. Each is a deliberate constraint — Age Up is a single-purpose tool, not a launcher, not a tracker, not a coach AI.
       </p>
       <div className="features">
         {items.map((it, i) => (
@@ -170,7 +170,7 @@ function HowItWorks() {
       <span className="eyebrow">Pipeline</span>
       <h2 className="section-title">From your screen to <em>the next step.</em></h2>
       <p className="section-sub">
-        Every second, Open Age screenshots the AoE2 window, crops to four pre-calibrated rectangles, runs OCR on each, and tests your build order's triggers. If a trigger matches, the current step advances. Otherwise, you do nothing and the panel stays put.
+        Every second, Age Up screenshots the AoE2 window, crops to four pre-calibrated rectangles, runs OCR on each, and tests your build order's triggers. If a trigger matches, the current step advances. Otherwise, you do nothing and the panel stays put.
       </p>
       <div className="pipeline">
         <div className="stage">
@@ -226,7 +226,7 @@ function BuildOrders() {
       <span className="eyebrow">Build orders</span>
       <h2 className="section-title">Three in the box. <em>Yours next.</em></h2>
       <p className="section-sub">
-        Open Age ships with a Scout Rush, a Britons Archer flush, and a Fast Castle. They live as plain YAML files in <code style={{fontFamily: "var(--font-mono)", color: "var(--violet-bright)"}}>~/Documents/OpenAge/build-orders/</code>. Drop your own beside them.
+        Age Up ships with a Scout Rush, a Britons Archer flush, and a Fast Castle. They live as plain YAML files in <code style={{fontFamily: "var(--font-mono)", color: "var(--violet-bright)"}}>~/Documents/AgeUp/build-orders/</code>. Drop your own beside them.
       </p>
       <div className="bo-grid">
         {window.BUILD_ORDERS.map((bo) => (
@@ -265,7 +265,7 @@ function Performance() {
       <span className="eyebrow">Performance & privacy</span>
       <h2 className="section-title">Nothing the game cares about. <em>Nothing you didn't ask for.</em></h2>
       <p className="section-sub">
-        Open Age has no business reading your memory, your network traffic, or your account. Here's exactly what it does and doesn't do.
+        Age Up has no business reading your memory, your network traffic, or your account. Here's exactly what it does and doesn't do.
       </p>
       <div className="specs">
         <div className="spec-list">
@@ -331,7 +331,7 @@ function Roadmap() {
       <span className="eyebrow">Roadmap</span>
       <h2 className="section-title">Five phases. <em>One you can use today.</em></h2>
       <p className="section-sub">
-        Open Age is built in public. Phase 1 (the panel you're holding above) is live; phases 2–5 ship as they're ready. Track progress on GitHub.
+        Age Up is built in public. Phase 1 (the panel you're holding above) is live; phases 2–5 ship as they're ready. Track progress on GitHub.
       </p>
       <div className="roadmap">
         {phases.map((p) => (
@@ -390,7 +390,7 @@ function OpenSourceCTA() {
         <div>
           <h2 className="os-cta__title">Open source. <span style={{color: "var(--violet-bright)"}}>MIT.</span> Yours to fork.</h2>
           <p className="os-cta__sub">
-            Open Age is built with Tauri 2.0, React 19, and a thin Rust core. The build order schema is plain YAML. Issues, PRs, and BO contributions welcome.
+            Age Up is built with Tauri 2.0, React 19, and a thin Rust core. The build order schema is plain YAML. Issues, PRs, and BO contributions welcome.
           </p>
           <div className="os-cta__actions">
             <a href="#" className="btn btn--primary">
@@ -490,7 +490,7 @@ function HeroWithVariant({ tweaks }) {
             Run your build order <span className="accent">without leaving the game.</span>
           </h1>
           <p className="hero__lede">
-            Open Age is a transparent, always-on-top desktop overlay for <strong>Age of Empires II: Definitive Edition</strong>. It walks you through any YAML build order step-by-step — and reads the game with OCR, so you don't have to.
+            Age Up is a transparent, always-on-top desktop overlay for <strong>Age of Empires II: Definitive Edition</strong>. It walks you through any YAML build order step-by-step — and reads the game with OCR, so you don't have to.
           </p>
           <div className="hero__cta">
             <a href="#download" className="btn btn--primary">

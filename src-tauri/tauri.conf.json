@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/nicholasrice/tauri/refs/heads/feat/v2-schema-update/crates/tauri-cli/schema.json",
-  "productName": "AoE Overlay",
+  "productName": "Age Up",
   "version": "0.5.1",
   "identifier": "com.aoe-overlay.app",
   "build": {
@@ -14,7 +14,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "AoE Overlay",
+        "title": "Age Up",
         "transparent": true,
         "decorations": false,
         "alwaysOnTop": true,
