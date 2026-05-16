@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="src/assets/hero.png" alt="Open Age logo" width="160" />
+  <img src="src/assets/hero.png" alt="Age Up logo" width="160" />
 </p>
 
-<h1 align="center">Open Age</h1>
+<h1 align="center">Age Up</h1>
 
 <p align="center">
   <a href="https://github.com/nikrich/open-age/actions/workflows/release.yml"><img src="https://github.com/nikrich/open-age/actions/workflows/release.yml/badge.svg" alt="Release" /></a>
@@ -18,19 +18,19 @@ A lightweight, transparent, always-on-top desktop overlay that helps players lea
 <table>
   <tr>
     <td valign="top" align="center">
-      <img width="320" alt="Open Age — empty state (no build order loaded)" src="docs/screenshots/empty-state.png" />
+      <img width="320" alt="Age Up — empty state (no build order loaded)" src="docs/screenshots/empty-state.png" />
       <br /><br />
-      <img width="320" alt="Open Age — Run tab" src="https://github.com/user-attachments/assets/afe6c8f1-d6ec-4cc1-bd18-4513ec279ed8" />
+      <img width="320" alt="Age Up — Run tab" src="https://github.com/user-attachments/assets/afe6c8f1-d6ec-4cc1-bd18-4513ec279ed8" />
     </td>
     <td valign="top" align="center">
-      <img width="320" alt="Open Age — Library tab" src="https://github.com/user-attachments/assets/049c4add-752b-4ec4-b160-ce05efd1c89f" />
+      <img width="320" alt="Age Up — Library tab" src="https://github.com/user-attachments/assets/049c4add-752b-4ec4-b160-ce05efd1c89f" />
     </td>
   </tr>
 </table>
 </div>
 
 
-Open Age reads game state from the screen via OCR (no memory injection, no anti-cheat risk) and either auto-advances build order steps based on resource/villager/time triggers, or allows manual advancement via global hotkey.
+Age Up reads game state from the screen via OCR (no memory injection, no anti-cheat risk) and either auto-advances build order steps based on resource/villager/time triggers, or allows manual advancement via global hotkey.
 
 ---
 
@@ -47,7 +47,7 @@ Open Age reads game state from the screen via OCR (no memory injection, no anti-
 ## Screenshots
 
 <p align="center">
-  <img src="docs/aoe.png" alt="Open Age overlay running alongside Age of Empires II: Definitive Edition" width="760" />
+  <img src="docs/aoe.png" alt="Age Up overlay running alongside Age of Empires II: Definitive Edition" width="760" />
 </p>
 
 <p align="center"><sub>The overlay sits in the top-right corner of AoE2:DE — current step highlighted, next step queued, no focus stealing.</sub></p>
@@ -67,7 +67,7 @@ Download the latest installer from the [Releases](https://github.com/nikrich/ope
 
 ## Usage
 
-1. Launch Open Age
+1. Launch Age Up
 2. Go to the **Library** tab and select a build order
 3. The overlay shows the current step with an amber highlight and the next step below
 4. Use hotkeys to navigate:
@@ -83,7 +83,7 @@ Download the latest installer from the [Releases](https://github.com/nikrich/ope
 
 ## Build Orders
 
-Open Age ships with three sample build orders:
+Age Up ships with three sample build orders:
 
 | Build Order | Civilization | Difficulty |
 |---|---|---|
@@ -173,8 +173,8 @@ cargo tauri build
 ```
 
 Outputs are in `src-tauri/target/release/bundle/`:
-- `msi/AoE Overlay_0.1.0_x64_en-US.msi`
-- `nsis/AoE Overlay_0.1.0_x64-setup.exe`
+- `msi/Age Up_0.1.0_x64_en-US.msi`
+- `nsis/Age Up_0.1.0_x64-setup.exe`
 
 ---
 
@@ -257,7 +257,7 @@ These are automatically used by Claude Code when working on this project.
 ## FAQ
 
 **Will this get me banned?**
-No. Open Age uses read-only screen capture (the same as OBS or any screenshot tool). It does not inject into game memory, modify game files, or send any input to the game. It is indistinguishable from a screen recording app.
+No. Age Up uses read-only screen capture (the same as OBS or any screenshot tool). It does not inject into game memory, modify game files, or send any input to the game. It is indistinguishable from a screen recording app.
 
 **Does it work in fullscreen mode?**
 It works in **borderless fullscreen** (the default AoE2:DE setting). Exclusive fullscreen is not supported.

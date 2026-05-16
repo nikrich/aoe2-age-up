@@ -1,4 +1,4 @@
-# AoE Overlay — Technical Specification
+# Age Up — Technical Specification
 
 **Project codename:** `aoe-overlay`
 **Target platform:** Windows 10/11 (primary), with macOS/Linux as nice-to-have
@@ -620,8 +620,8 @@ cargo tauri build
 
 Outputs:
 
-- `src-tauri/target/release/bundle/msi/AoE Overlay_0.1.0_x64_en-US.msi`
-- `src-tauri/target/release/bundle/nsis/AoE Overlay_0.1.0_x64-setup.exe`
+- `src-tauri/target/release/bundle/msi/Age Up_0.1.0_x64_en-US.msi`
+- `src-tauri/target/release/bundle/nsis/Age Up_0.1.0_x64-setup.exe`
 
 ### 12.3 Code signing (post-MVP)
 

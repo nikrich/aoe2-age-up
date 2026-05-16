@@ -1,4 +1,4 @@
-# Open Age — Claude Code Project Guide
+# Age Up — Claude Code Project Guide
 
 ## What is this?
 

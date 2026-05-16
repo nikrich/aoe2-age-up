@@ -1,4 +1,4 @@
-# Recommended Claude Code Skills for AoE Overlay
+# Recommended Claude Code Skills for Age Up
 
 A curated list of skills to install before handing off the spec, ordered by impact for this specific project.
 
