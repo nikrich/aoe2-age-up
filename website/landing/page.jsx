@@ -31,7 +31,7 @@ function Header() {
         <div className="nav-actions">
           <a href="#" className="gh-link" aria-label="GitHub repository">
             <svg viewBox="0 0 24 24" aria-hidden="true"><use href="landing/assets/icons.svg#github-icon" /></svg>
-            <span>nikrich/open-age</span>
+            <span>nikrich/aoe2-age-up</span>
             <span className="stars">★ 1.2k</span>
           </a>
           <a href="#download" className="btn btn--primary" style={{padding: "8px 14px", fontSize: 13}}>Download</a>
@@ -310,7 +310,7 @@ function Performance() {
           <div className="row" style={{marginTop: 4}}><span className="k">always_on_top</span><span className="v ok">true</span></div>
           <div className="row" style={{marginTop: 4}}><span className="k">click_through</span><span className="v warn">false</span></div>
           <div style={{marginTop: 16, paddingTop: 12, borderTop: "1px solid var(--border)", color: "var(--text-tertiary)", fontSize: 11}}>
-            % open-age · idle · 1.4% cpu · 82 MB
+            % age-up · idle · 1.4% cpu · 82 MB
           </div>
         </div>
       </div>
@@ -398,21 +398,21 @@ function OpenSourceCTA() {
             </a>
             <a href="#" className="btn btn--ghost">
               <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><use href="landing/assets/icons.svg#github-icon" /></svg>
-              github.com/nikrich/open-age
+              github.com/nikrich/aoe2-age-up
             </a>
           </div>
         </div>
         <div className="os-cta__terminal">
           <div className="os-cta__terminal-bar">
             <span className="dot"></span><span className="dot"></span><span className="dot"></span>
-            <span className="title">~ / open-age</span>
+            <span className="title">~ / aoe2-age-up</span>
           </div>
           <div className="os-cta__terminal-body">
-            <div><span className="prompt">$</span><span className="cmd">git clone github.com/nikrich/open-age</span></div>
-            <div className="out">cloning into 'open-age'... <span className="ok">done.</span></div>
-            <div><span className="prompt">$</span><span className="cmd">cd open-age && pnpm tauri dev</span></div>
+            <div><span className="prompt">$</span><span className="cmd">git clone github.com/nikrich/aoe2-age-up</span></div>
+            <div className="out">cloning into 'aoe2-age-up'... <span className="ok">done.</span></div>
+            <div><span className="prompt">$</span><span className="cmd">cd aoe2-age-up && pnpm tauri dev</span></div>
             <div className="out">▸ vite v6.0.0  ready in 412 ms</div>
-            <div className="out">▸ rust  building open-age v0.4.0</div>
+            <div className="out">▸ rust  building age-up v0.4.0</div>
             <div className="out">▸ overlay <span className="ok">window opened</span> · pid 4212</div>
             <div><span className="prompt">$</span><span style={{color: "var(--accent)"}}>_</span></div>
           </div>
@@ -464,7 +464,7 @@ function Footer() {
           </div>
         </div>
         <div className="footer__bottom">
-          <span>// open-age · v0.4 · MIT · 2026</span>
+          <span>// age-up · v0.4 · MIT · 2026</span>
           <div className="footer__social">
             <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24"><use href="landing/assets/icons.svg#github-icon" /></svg></a>
             <a href="#" aria-label="X"><svg viewBox="0 0 24 24"><use href="landing/assets/icons.svg#x-icon" /></svg></a>

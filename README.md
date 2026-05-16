@@ -5,9 +5,9 @@
 <h1 align="center">Age Up</h1>
 
 <p align="center">
-  <a href="https://github.com/nikrich/open-age/actions/workflows/release.yml"><img src="https://github.com/nikrich/open-age/actions/workflows/release.yml/badge.svg" alt="Release" /></a>
+  <a href="https://github.com/nikrich/aoe2-age-up/actions/workflows/release.yml"><img src="https://github.com/nikrich/aoe2-age-up/actions/workflows/release.yml/badge.svg" alt="Release" /></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
-  <a href="https://github.com/nikrich/open-age/releases"><img src="https://img.shields.io/badge/version-0.1.0-blue.svg" alt="Version" /></a>
+  <a href="https://github.com/nikrich/aoe2-age-up/releases"><img src="https://img.shields.io/badge/version-0.1.0-blue.svg" alt="Version" /></a>
   <a href="https://www.rust-lang.org/"><img src="https://img.shields.io/badge/rust-1.75%2B-orange.svg" alt="Rust" /></a>
   <a href="https://tauri.app/"><img src="https://img.shields.io/badge/tauri-2.0-24C8D8.svg" alt="Tauri" /></a>
 </p>
@@ -56,7 +56,7 @@ Age Up reads game state from the screen via OCR (no memory injection, no anti-ch
 
 ### Download
 
-Download the latest installer from the [Releases](https://github.com/nikrich/open-age/releases) page:
+Download the latest installer from the [Releases](https://github.com/nikrich/aoe2-age-up/releases) page:
 
 - **Windows:** `.msi` or `.exe` installer
 
@@ -148,8 +148,8 @@ cargo install tauri-cli --version "^2.0"
 ### Setup
 
 ```bash
-git clone https://github.com/nikrich/open-age.git
-cd open-age
+git clone https://github.com/nikrich/aoe2-age-up.git
+cd aoe2-age-up
 npm install
 ```
 
@@ -181,7 +181,7 @@ Outputs are in `src-tauri/target/release/bundle/`:
 ## Architecture
 
 ```
-open-age/
+aoe2-age-up/
 ├── src-tauri/               # Rust backend
 │   └── src/
 │       ├── main.rs          # Tauri setup, command handlers
