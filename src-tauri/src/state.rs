@@ -33,6 +33,39 @@ impl Default for GameState {
     }
 }
 
+/// Implausible game time (>3h) is treated as garbage OCR and ignored when
+/// updating the peak. Matches the cap used by the frontend overlay.
+const MAX_PLAUSIBLE_GAME_TIME_SECONDS: u32 = 3 * 60 * 60;
+
+impl GameState {
+    /// Merge `other` into `self`, keeping the per-field maximum. Used to
+    /// build a session "peak" state that latches the highest value each
+    /// resource / villager count / game time has ever cleanly hit, so a
+    /// single transient OCR misread can't undo a satisfied trigger.
+    pub fn merge_max(&mut self, other: &GameState) {
+        self.food = max_opt(self.food, other.food);
+        self.wood = max_opt(self.wood, other.wood);
+        self.gold = max_opt(self.gold, other.gold);
+        self.stone = max_opt(self.stone, other.stone);
+        self.villagers = max_opt(self.villagers, other.villagers);
+        self.population = match (self.population, other.population) {
+            (Some((a, am)), Some((b, bm))) => Some((a.max(b), am.max(bm))),
+            (Some(p), None) | (None, Some(p)) => Some(p),
+            (None, None) => None,
+        };
+        let sane_time = other.game_time_seconds.filter(|t| *t <= MAX_PLAUSIBLE_GAME_TIME_SECONDS);
+        self.game_time_seconds = max_opt(self.game_time_seconds, sane_time);
+    }
+}
+
+fn max_opt(a: Option<u32>, b: Option<u32>) -> Option<u32> {
+    match (a, b) {
+        (Some(x), Some(y)) => Some(x.max(y)),
+        (Some(x), None) | (None, Some(x)) => Some(x),
+        (None, None) => None,
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Hash, Eq, PartialEq, Copy)]
 pub enum RegionKind {
     Food,
@@ -153,6 +186,11 @@ pub struct AppState {
     pub current_build_order: Option<BuildOrder>,
     pub current_step_index: usize,
     pub last_game_state: GameState,
+    /// Per-field max of every clean OCR reading this session. Auto-advance
+    /// evaluates triggers against this so transient misreads (vill 21 read
+    /// once, then OCR drops back to 13) can't un-satisfy a trigger.
+    /// Reset whenever a build order is loaded or steps are reset.
+    pub peak_game_state: GameState,
     pub capture_running: bool,
     pub calibration: Calibration,
     pub settings: Settings,
@@ -164,6 +202,7 @@ impl Default for AppState {
             current_build_order: None,
             current_step_index: 0,
             last_game_state: GameState::default(),
+            peak_game_state: GameState::default(),
             capture_running: false,
             calibration: Calibration::default(),
             settings: Settings::default(),
@@ -174,4 +213,55 @@ impl Default for AppState {
 /// Handle for controlling the capture loop from IPC commands.
 pub struct CaptureHandle {
     pub stop_tx: Option<mpsc::Sender<()>>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn merge_max_keeps_higher_per_field() {
+        let mut peak = GameState::default();
+        peak.merge_max(&GameState {
+            villagers: Some(21),
+            food: Some(200),
+            game_time_seconds: Some(540),
+            ..GameState::default()
+        });
+        // Now an OCR misread comes in: villager count "drops" to 13, food drops, etc.
+        peak.merge_max(&GameState {
+            villagers: Some(13),
+            food: Some(50),
+            game_time_seconds: Some(560),
+            ..GameState::default()
+        });
+        assert_eq!(peak.villagers, Some(21));
+        assert_eq!(peak.food, Some(200));
+        assert_eq!(peak.game_time_seconds, Some(560));
+    }
+
+    #[test]
+    fn merge_max_rejects_garbage_game_time() {
+        let mut peak = GameState::default();
+        peak.merge_max(&GameState {
+            game_time_seconds: Some(600),
+            ..GameState::default()
+        });
+        // OCR misread: 12 million seconds. Must not latch.
+        peak.merge_max(&GameState {
+            game_time_seconds: Some(12_006_841),
+            ..GameState::default()
+        });
+        assert_eq!(peak.game_time_seconds, Some(600));
+    }
+
+    #[test]
+    fn merge_max_handles_none_gracefully() {
+        let mut peak = GameState {
+            villagers: Some(10),
+            ..GameState::default()
+        };
+        peak.merge_max(&GameState::default());
+        assert_eq!(peak.villagers, Some(10));
+    }
 }

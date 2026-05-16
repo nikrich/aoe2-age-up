@@ -116,5 +116,5 @@ fn test_load_all_sample_build_orders() {
         }
     }
 
-    assert_eq!(count, 4, "Expected exactly 4 sample build orders, found {}", count);
+    assert_eq!(count, 5, "Expected exactly 5 sample build orders, found {}", count);
 }

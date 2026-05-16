@@ -1,0 +1,51 @@
+id: archers-1range-hera
+name: "1 Range Archers (Hera)"
+civilization: Britons
+author: HERA
+source_url: "https://buildorderguide.com"
+description: "Fast Feudal into a single Archery Range — values Fletching over a second range for faster Castle timing. Best on civs with both Arbalest and Bracer."
+tags: [archers, feudal-aggression, britons, hera]
+difficulty: intermediate
+glyph: 1RA
+
+steps:
+  - action: "6 vills on sheep"
+    at: { time_seconds: 0 }
+    target_time_seconds: 0
+    phase: dark
+    villagers_assigned: { food: 6, wood: 0, gold: 0, stone: 0, idle: 0 }
+  - action: "3 to wood (lumber camp)"
+    at: { villagers: 6 }
+    target_time_seconds: 90
+    phase: dark
+    villagers_assigned: { food: 6, wood: 3, gold: 0, stone: 0, idle: 0 }
+  - action: "Lure first boar; build house + mill on berries"
+    at: { villagers: 9 }
+    target_time_seconds: 120
+    phase: dark
+    notes: "Garrison the lurer in TC after one shot. Don't let the boar rot."
+    villagers_assigned: { food: 7, wood: 3, gold: 0, stone: 0, idle: 0 }
+  - action: "6 more to sheep; lure 1 deer"
+    at: { villagers: 10 }
+    target_time_seconds: 270
+    phase: dark
+    villagers_assigned: { food: 13, wood: 3, gold: 0, stone: 0, idle: 0 }
+  - action: "Lure second boar"
+    at: { villagers: 16 }
+    target_time_seconds: 300
+    phase: dark
+    villagers_assigned: { food: 14, wood: 3, gold: 0, stone: 0, idle: 0 }
+  - action: "2 more to wood; research Loom; click Feudal"
+    at: { villagers: 17 }
+    target_time_seconds: 360
+    phase: dark
+    villagers_assigned: { food: 14, wood: 5, gold: 0, stone: 0, idle: 0 }
+  - action: "Feudal transition: range, blacksmith, Fletching, farms"
+    at: { villagers: 19 }
+    target_time_seconds: 540
+    phase: feudal
+    notes: |
+      Before Feudal lands: move 5 from food-under-TC to wood, 2 to straggler trees, 1 to build a lumber camp then back to food, 2 to gold.
+      Research Double-Bit Axe. Build 1 Archery Range. 2 new vills go to gold. Build Blacksmith and research Fletching. Move 4 from food to berries.
+      Optional: 1-4 Spearmen if scared of enemy Scouts. Start farms as wood permits. Wall with 2-3 vills using Houses + Palisades.
+    villagers_assigned: { food: 5, wood: 12, gold: 4, stone: 0, idle: 0 }
