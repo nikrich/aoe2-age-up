@@ -15,33 +15,33 @@ steps:
     phase: dark
     villagers_assigned: { food: 6, wood: 0, gold: 0, stone: 0, idle: 0 }
   - action: "3 to wood (lumber camp)"
-    at: { villagers: 9 }
+    at: { villagers: 6 }
     target_time_seconds: 90
     phase: dark
     villagers_assigned: { food: 6, wood: 3, gold: 0, stone: 0, idle: 0 }
   - action: "Lure first boar; build house + mill on berries"
-    at: { villagers: 10 }
+    at: { villagers: 9 }
     target_time_seconds: 120
     phase: dark
     notes: "Garrison the lurer in TC after one shot. Don't let the boar rot."
     villagers_assigned: { food: 7, wood: 3, gold: 0, stone: 0, idle: 0 }
   - action: "6 more to sheep; lure 1 deer"
-    at: { villagers: 16 }
+    at: { villagers: 10 }
     target_time_seconds: 270
     phase: dark
     villagers_assigned: { food: 13, wood: 3, gold: 0, stone: 0, idle: 0 }
   - action: "Lure second boar"
-    at: { villagers: 17 }
+    at: { villagers: 16 }
     target_time_seconds: 300
     phase: dark
     villagers_assigned: { food: 14, wood: 3, gold: 0, stone: 0, idle: 0 }
   - action: "2 more to wood; research Loom; click Feudal"
-    at: { villagers: 19 }
+    at: { villagers: 17 }
     target_time_seconds: 360
     phase: dark
     villagers_assigned: { food: 14, wood: 5, gold: 0, stone: 0, idle: 0 }
   - action: "Feudal transition: range, blacksmith, Fletching, farms"
-    at: { villagers: 21 }
+    at: { villagers: 19 }
     target_time_seconds: 540
     phase: feudal
     notes: |
