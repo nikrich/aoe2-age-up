@@ -52,7 +52,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: app-v__VERSION__
-          releaseName: "AoE Overlay v__VERSION__"
+          releaseName: "Age Up v__VERSION__"
           releaseBody: "Download the .msi or .exe installer from the assets below."
           releaseDraft: true
           prerelease: false

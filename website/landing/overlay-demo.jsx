@@ -1,4 +1,4 @@
-// Open Age — embedded interactive overlay demo.
+// Age Up — embedded interactive overlay demo.
 // Renders the real overlay UI (View switcher → Overlay/Library/Settings)
 // using the same DOM structure as the source repo.
 
