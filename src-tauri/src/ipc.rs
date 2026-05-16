@@ -45,6 +45,7 @@ pub fn load_build_order_cmd(
     let mut s = state.lock().unwrap();
     s.current_build_order = Some(bo.clone());
     s.current_step_index = 0;
+    s.peak_game_state = crate::state::GameState::default();
     emit_step_changed(&app, &s);
 
     Ok(bo)
@@ -96,6 +97,7 @@ pub fn reset_steps(
 ) -> Result<(), AppError> {
     let mut s = state.lock().unwrap();
     s.current_step_index = 0;
+    s.peak_game_state = crate::state::GameState::default();
     emit_step_changed(&app, &s);
     Ok(())
 }

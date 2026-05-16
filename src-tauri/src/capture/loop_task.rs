@@ -132,14 +132,18 @@ pub fn spawn_capture_loop(
                 let state_mutex = app.state::<Mutex<AppState>>();
                 let mut s = state_mutex.lock().unwrap();
                 s.last_game_state = new_game_state.clone();
+                // Latch peaks so a clean reading at threshold N stays
+                // satisfied even if later OCR frames misread lower.
+                s.peak_game_state.merge_max(&new_game_state);
 
                 if s.settings.auto_advance {
                     if let Some(ref bo) = s.current_build_order {
                         if s.current_step_index < bo.steps.len() - 1 {
                             let next_trigger = &bo.steps[s.current_step_index + 1].at;
-                            let result = evaluate(next_trigger, &new_game_state);
-                            debug!("Auto-advance check: step={}, trigger={:?}, vils={:?}, time={:?}, result={}",
-                                s.current_step_index, next_trigger, new_game_state.villagers, new_game_state.game_time_seconds, result);
+                            let peak = s.peak_game_state.clone();
+                            let result = evaluate(next_trigger, &peak);
+                            debug!("Auto-advance check: step={}, trigger={:?}, peak_vils={:?}, peak_time={:?}, cur_vils={:?}, result={}",
+                                s.current_step_index, next_trigger, peak.villagers, peak.game_time_seconds, new_game_state.villagers, result);
                             if result {
                                 s.current_step_index += 1;
                                 emit_step_changed(&app, &s);
