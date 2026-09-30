@@ -10,7 +10,7 @@ use crate::build_order::engine::evaluate;
 use crate::ipc::emit_step_changed;
 use crate::ocr::preprocess::crop_region;
 use crate::ocr::OcrPipeline;
-use crate::state::{AppState, GameState, RegionKind};
+use crate::state::{AppState, RegionKind};
 
 use super::CaptureBackend;
 

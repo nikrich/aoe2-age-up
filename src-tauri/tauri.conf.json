@@ -39,11 +39,8 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "externalBin": ["binaries/tesseract"],
     "resources": [
-      "../build-orders/*",
-      "tesseract-deps/*",
-      "tesseract-deps/tessdata/*"
+      "../build-orders/*"
     ]
   }
 }

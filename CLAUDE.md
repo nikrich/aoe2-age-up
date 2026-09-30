@@ -6,10 +6,12 @@ AoE2 build order overlay built with Tauri 2.0 (Rust backend) + React/TypeScript 
 
 ## Commands
 
-- `cargo tauri dev` — Run in development mode
-- `cd src-tauri && cargo test` — Run all Rust tests (16 unit + 2 integration)
+- `npx tauri dev` — Run in development mode (equivalently `cargo tauri dev` if the CLI is installed globally)
+- `cd src-tauri && cargo test` — Run all Rust tests (44 unit + integration tests in `src-tauri/tests/`)
+- `npm run lint` — ESLint over the React/TS frontend
 - `npm run build` — Build frontend only
-- `cargo tauri build` — Build release installer
+- `npx tauri build --no-bundle` — Release binary without packaging
+- `npx tauri build` — Build release installer
 
 ## Architecture
 
@@ -23,6 +25,11 @@ AoE2 build order overlay built with Tauri 2.0 (Rust backend) + React/TypeScript 
 - IPC: frontend calls Tauri commands, backend emits events (`step-changed`, `game-state`)
 - Build order engine uses trigger evaluation with AND/OR modes
 - Global hotkeys via `global-hotkey` crate, registered on startup
+- Screen capture is `xcap` (XDG Screenshot portal on Wayland); OCR shells out to
+  `tesseract` over stdin, resolving the binary via `ipc::resolve_tesseract`
+  (bundled sidecar first, system install as fallback)
+- Bundled resources: `tauri.conf.json` maps `../build-orders/*` to
+  `<resources>/_up_/build-orders`, so `main.rs` probes both layouts
 
 ## Development Phases
 

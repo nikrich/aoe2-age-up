@@ -6,7 +6,9 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // dist = frontend build output; src-tauri/target = Rust build output (holds
+  // generated tauri-codegen assets that aren't parseable as JS source).
+  globalIgnores(['dist', 'src-tauri/target', 'node_modules']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

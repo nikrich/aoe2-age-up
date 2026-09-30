@@ -1,0 +1,11 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "bundle": {
+    "externalBin": ["binaries/tesseract"],
+    "resources": [
+      "../build-orders/*",
+      "tesseract-deps/*",
+      "tesseract-deps/tessdata/*"
+    ]
+  }
+}

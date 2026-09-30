@@ -106,7 +106,7 @@ impl Calibration {
         regions.insert(RegionKind::Stone, Region { x: 338, y: 20, width: 48, height: 20 });
         regions.insert(RegionKind::Villagers, Region { x: 420, y: 30, width: 28, height: 18 });
         regions.insert(RegionKind::Population, Region { x: 450, y: 20, width: 55, height: 20 });
-        regions.insert(RegionKind::GameTime, Region { x: 830, y: 2, width: 90, height: 22 });
+        regions.insert(RegionKind::GameTime, Region { x: 836, y: 6, width: 74, height: 24 });
 
         Self {
             profile_name: "1080p-default".to_string(),
@@ -154,7 +154,9 @@ pub enum OcrBackend {
 
 impl Default for OcrBackend {
     fn default() -> Self {
-        Self::Template
+        // Tesseract is what `start_capture` ships with on Windows (bundled
+        // sidecar) and what system installs provide on Linux.
+        Self::Tesseract
     }
 }
 

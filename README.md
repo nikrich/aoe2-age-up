@@ -139,10 +139,41 @@ Each step has an `at` field that defines when it should activate:
 
 - [Rust](https://rustup.rs/) 1.75+
 - [Node.js](https://nodejs.org/) 20+
-- [Tauri CLI](https://tauri.app/) 2.0+
+- [Tauri CLI](https://tauri.app/) 2.0+ (also available locally via `npx tauri`)
 
 ```bash
-cargo install tauri-cli --version "^2.0"
+cargo install tauri-cli --version "^2"
+```
+
+#### Linux system packages
+
+The desktop build needs the Tauri web stack plus a Tesseract install for OCR:
+
+```bash
+# Arch / CachyOS / Manjaro
+sudo pacman -S --needed webkit2gtk-4.1 gtk3 tesseract tesseract-data-eng
+
+# Debian / Ubuntu
+sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev tesseract-ocr tesseract-ocr-eng
+```
+
+`tesseract-data-eng` matters: without `eng.traineddata` the capture loop starts
+but every OCR read fails.
+
+#### Wayland / always-on-top
+
+GTK's `set_keep_above` is a no-op on native Wayland, so the window would lose
+its stacking place against a fullscreen game. `main.rs` therefore forces
+`GDK_BACKEND=x11` (unless you set it yourself): the overlay runs on XWayland,
+which is also where the game lives, and `_NET_WM_STATE_ABOVE` keeps it on top.
+That also lets KWin match the window against a launcher entry.
+
+To get the shield icon in your desktop menu / taskbar, drop the desktop entry
+and the icon theme files in place (adjust `Exec` to your build path):
+
+```bash
+install -Dm644 src-tauri/icons/icon.svg ~/.local/share/icons/hicolor/scalable/apps/aoe-overlay.svg
+# plus a ~/.local/share/applications/aoe-overlay.desktop with StartupWMClass=aoe-overlay
 ```
 
 ### Setup
@@ -156,7 +187,7 @@ npm install
 ### Run in Development
 
 ```bash
-cargo tauri dev
+npx tauri dev      # or: cargo tauri dev
 ```
 
 ### Run Tests
@@ -169,12 +200,13 @@ cargo test
 ### Build for Release
 
 ```bash
-cargo tauri build
+npx tauri build
 ```
 
 Outputs are in `src-tauri/target/release/bundle/`:
-- `msi/AoE Overlay_0.1.0_x64_en-US.msi`
-- `nsis/AoE Overlay_0.1.0_x64-setup.exe`
+- **Windows:** `msi/AoE Overlay_0.1.0_x64_en-US.msi`, `nsis/AoE Overlay_0.1.0_x64-setup.exe`
+- **Linux:** `deb/`, `rpm/` or `appimage/` (`--bundles deb|rpm|appimage`; the
+  default `targets: "all"` only applies where the bundler tools are installed)
 
 ---
 

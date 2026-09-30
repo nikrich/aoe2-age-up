@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe0a3"/>
+      <stop offset="0.45" stop-color="#ffb84d"/>
+      <stop offset="1" stop-color="#c97f1d"/>
+    </linearGradient>
+    <linearGradient id="face" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#3a2a17"/>
+      <stop offset="0.55" stop-color="#241a0f"/>
+      <stop offset="1" stop-color="#14100b"/>
+    </linearGradient>
+    <linearGradient id="arrow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff6e2"/>
+      <stop offset="1" stop-color="#ffb84d"/>
+    </linearGradient>
+    <radialGradient id="shine" cx="0.5" cy="0.22" r="0.75">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- shield: gold rim + dark face -->
+  <path id="shield" d="M512 120 L176 232 Q152 240 152 266 V520
+                       C152 716 312 848 512 916
+                       C712 848 872 716 872 520 V266
+                       Q872 240 848 232 Z"
+        fill="url(#face)" stroke="url(#gold)" stroke-width="46" stroke-linejoin="round"/>
+  <path d="M512 120 L176 232 Q152 240 152 266 V520
+           C152 716 312 848 512 916
+           C712 848 872 716 872 520 V266
+           Q872 240 848 232 Z"
+        fill="url(#shine)"/>
+
+  <!-- three chevrons rising = age up -->
+  <g stroke-linejoin="round">
+    <path d="M392 676 L512 606 L632 676 L632 722 L512 652 L392 722 Z"
+          fill="url(#gold)" opacity="0.32"/>
+    <path d="M392 546 L512 476 L632 546 L632 592 L512 522 L392 592 Z"
+          fill="url(#gold)" opacity="0.6"/>
+    <path d="M392 416 L512 346 L632 416 L632 462 L512 392 L392 462 Z"
+          fill="url(#arrow)"/>
+  </g>
+
+  <!-- sparkle -->
+  <path d="M736 300 Q748 356 804 368 Q748 380 736 436 Q724 380 668 368 Q724 356 736 300 Z"
+        fill="#fff6e2" opacity="0.9"/>
+</svg>

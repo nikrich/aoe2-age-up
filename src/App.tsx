@@ -58,7 +58,9 @@ function App() {
   // moves that happen while in Cal (it snap-centers and shouldn't overwrite
   // the user's preferred overlay spot).
   const viewRef = useRef<View>(view);
-  viewRef.current = view;
+  useEffect(() => {
+    viewRef.current = view;
+  }, [view]);
   useEffect(() => {
     const win = getCurrentWindow();
     let timer: number | null = null;
@@ -114,8 +116,9 @@ function App() {
             const y = monitorLogicalY + CAL_TOP_MARGIN;
             await win.setSize(new LogicalSize(CAL_WIN_W, CAL_WIN_H));
             await win.setPosition(new LogicalPosition(x, y));
-            // Sync the ResizeObserver's last-size cache so it doesn't fight us.
-            lastSizeRef.current = { w: CAL_WIN_W, h: CAL_WIN_H };
+            // No need to pre-seed lastSizeRef here: the ResizeObserver sees the
+            // .wide content (fixed 1200x720 in CSS) and applySize then asks for
+            // exactly the size the window already has — a harmless no-op.
           }
         } catch (e) {
           console.error("Cal snap failed:", e);

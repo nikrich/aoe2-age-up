@@ -10,7 +10,7 @@ use crate::capture::fallback::XcapCapture;
 use crate::capture::loop_task::spawn_capture_loop;
 use crate::capture::CaptureBackend;
 use crate::ocr::windows_ocr::TesseractPipeline;
-use crate::state::{AppState, Calibration, CaptureHandle, RegionKind, Settings};
+use crate::state::{AppState, Calibration, CaptureHandle, OcrBackend, RegionKind, Settings};
 use crate::storage::Storage;
 
 #[derive(Clone, Serialize)]
@@ -118,6 +118,115 @@ pub fn get_calibration(
     Ok(s.calibration.clone())
 }
 
+/// Locate the Tesseract binary, its dependency directory and its tessdata
+/// directory, preferring the bundled sidecar (Windows installer) and falling
+/// back to a system install (Linux/macOS dev machines).
+pub fn resolve_tesseract(
+    exe_dir: &std::path::Path,
+    resource_dir: &std::path::Path,
+) -> (std::path::PathBuf, std::path::PathBuf, std::path::PathBuf) {
+    #[cfg(target_os = "windows")]
+    let sidecar_names = [
+        "tesseract-x86_64-pc-windows-msvc.exe",
+        "tesseract.exe",
+    ];
+    #[cfg(not(target_os = "windows"))]
+    let sidecar_names = [
+        "tesseract-x86_64-unknown-linux-gnu",
+        "tesseract-aarch64-unknown-linux-gnu",
+        "tesseract",
+    ];
+
+    // 1. Bundled sidecar next to the executable
+    let mut tesseract_path = None;
+    for name in sidecar_names {
+        let candidate = exe_dir.join(name);
+        if candidate.exists() {
+            tesseract_path = Some(candidate);
+            break;
+        }
+    }
+
+    // 2. Bundled dependency/tessdata directories (Windows bundle layout)
+    let deps_dir = {
+        let in_resource = resource_dir.join("tesseract-deps");
+        let in_exe = exe_dir.join("tesseract-deps");
+        if in_resource.is_dir() {
+            in_resource
+        } else if in_exe.is_dir() {
+            in_exe
+        } else {
+            std::path::PathBuf::new() // no bundled deps (Linux dev machine)
+        }
+    };
+
+    // 3. System tesseract on PATH (Linux/macOS)
+    if tesseract_path.is_none() {
+        tesseract_path = find_in_path("tesseract");
+    }
+
+    // 4. Common system locations as a last resort
+    if tesseract_path.is_none() {
+        for candidate in ["/usr/bin/tesseract", "/usr/local/bin/tesseract", "/bin/tesseract"] {
+            let p = std::path::PathBuf::from(candidate);
+            if p.exists() {
+                tesseract_path = Some(p);
+                break;
+            }
+        }
+    }
+
+    let tesseract_path = tesseract_path.unwrap_or_else(|| std::path::PathBuf::from("tesseract"));
+
+    // 5. Tessdata: bundled first, then distro locations, then TESSDATA_PREFIX.
+    //    If nothing is found we hand an empty path to the pipeline, which then
+    //    lets tesseract use its own compiled-in default.
+    let mut tessdata_path = deps_dir.join("tessdata");
+    if !tessdata_path.is_dir() {
+        let mut found: Option<std::path::PathBuf> = None;
+        if let Ok(prefix) = std::env::var("TESSDATA_PREFIX") {
+            let p = std::path::PathBuf::from(&prefix);
+            // Accept both a dir containing eng.traineddata and a parent of tessdata/
+            if p.join("eng.traineddata").exists() {
+                found = Some(p);
+            } else if p.join("tessdata").is_dir() {
+                found = Some(p.join("tessdata"));
+            }
+        }
+        if found.is_none() {
+            for candidate in [
+                "/usr/share/tessdata",
+                "/usr/share/tesseract-ocr/5/tessdata",
+                "/usr/share/tesseract-ocr/4.00/tessdata",
+                "/usr/local/share/tessdata",
+            ] {
+                let p = std::path::PathBuf::from(candidate);
+                if p.is_dir() {
+                    found = Some(p);
+                    break;
+                }
+            }
+        }
+        if let Some(p) = found {
+            tessdata_path = p;
+        }
+    }
+
+    (tesseract_path, deps_dir, tessdata_path)
+}
+
+/// Look up an executable in PATH without shelling out to `which`.
+fn find_in_path(name: &str) -> Option<std::path::PathBuf> {
+    let path = std::env::var_os("PATH")?;
+    for dir in std::env::split_paths(&path) {
+        let candidate = dir.join(name);
+        if candidate.is_file() {
+            return Some(candidate);
+        }
+    }
+    None
+}
+
 #[tauri::command]
 pub fn start_capture(
     app: AppHandle,
@@ -146,24 +255,36 @@ pub fn start_capture(
         let resource_dir = app.path().resource_dir()
             .map_err(|e| AppError::Capture(format!("Failed to resolve resource dir: {}", e)))?;
 
-        let tesseract_path = {
-            let with_triple = exe_dir.join("tesseract-x86_64-pc-windows-msvc.exe");
-            let plain = exe_dir.join("tesseract.exe");
-            if with_triple.exists() { with_triple } else { plain }
-        };
-        let deps_dir = {
-            let in_resource = resource_dir.join("tesseract-deps");
-            let in_exe = exe_dir.join("tesseract-deps");
-            if in_resource.exists() { in_resource } else { in_exe }
-        };
-        let tessdata_path = deps_dir.join("tessdata");
+        let (tesseract_path, deps_dir, tessdata_path) =
+            resolve_tesseract(&exe_dir, &resource_dir);
 
-        tracing::info!("Tesseract: {:?}, tessdata: {:?}, deps: {:?}", tesseract_path, tessdata_path, deps_dir);
+        let ocr_backend = {
+            let s = state.lock().unwrap();
+            s.settings.ocr_backend.clone()
+        };
 
-        let ocr = Box::new(
-            TesseractPipeline::new(tesseract_path, tessdata_path, deps_dir)
-                .map_err(|e| AppError::Capture(e.to_string()))?
-        );
+        let ocr: Box<dyn crate::ocr::OcrPipeline> = match ocr_backend {
+            // Pure-Rust template matching over synthetic glyphs: no external
+            // binary needed, but only meant as a last-resort backend.
+            OcrBackend::Template => {
+                tracing::warn!("Using the template OCR backend (synthetic glyphs, low accuracy)");
+                Box::new(crate::ocr::TemplatePipeline::new(
+                    crate::ocr::fixture::generate_fixture_templates(),
+                ))
+            }
+            OcrBackend::Tesseract => {
+                tracing::info!(
+                    "Tesseract: {:?}, tessdata: {:?}, deps: {:?}",
+                    tesseract_path,
+                    tessdata_path,
+                    deps_dir
+                );
+                Box::new(
+                    TesseractPipeline::new(tesseract_path, tessdata_path, deps_dir)
+                        .map_err(|e| AppError::Capture(e.to_string()))?,
+                )
+            }
+        };
 
         let stop_tx = spawn_capture_loop(app, backend, ocr);
 

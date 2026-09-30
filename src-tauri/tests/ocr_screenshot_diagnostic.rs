@@ -2,7 +2,7 @@ use aoe_overlay::ocr::fixture::generate_fixture_templates;
 use aoe_overlay::ocr::preprocess::{crop_region, to_grayscale, threshold};
 use aoe_overlay::ocr::segment::segment_characters;
 use aoe_overlay::ocr::template::match_character;
-use aoe_overlay::state::{Calibration, RegionKind};
+use aoe_overlay::state::Calibration;
 
 /// Diagnostic test: load a real AoE2:DE screenshot and attempt OCR on each
 /// calibrated region. Prints what the pipeline sees at each stage.

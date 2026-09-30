@@ -60,6 +60,15 @@ fn setup_panic_hook() {
 }
 
 fn main() {
+    // The overlay depends on always-on-top, and GTK's `set_keep_above` is a
+    // no-op on native Wayland (KWin exposes no keep-above protocol for
+    // xdg_toplevel). AoE2:DE runs through XWayland, so run the GTK window on
+    // X11 as well: `_NET_WM_STATE_ABOVE` then stacks it over the fullscreen
+    // game window. An explicit GDK_BACKEND from the caller still wins.
+    if std::env::var_os("GDK_BACKEND").is_none() {
+        std::env::set_var("GDK_BACKEND", "x11");
+    }
+
     setup_panic_hook();
     setup_logging();
 
@@ -69,12 +78,24 @@ fn main() {
             let app_data_dir = app.path().app_data_dir().expect("Failed to get app data dir");
             let storage = Storage::new(app_data_dir)?;
 
-            let bundled_dir = app
+            // Tauri maps `../build-orders/*` (the path in tauri.conf.json) to
+            // `<resources>/_up_/build-orders`, so both layouts must be probed —
+            // otherwise the bundled orders never land in the app data dir and
+            // the Library shows up empty.
+            let resource_dir = app
                 .path()
                 .resource_dir()
-                .expect("Failed to get resource dir")
-                .join("build-orders");
-            let _ = storage.copy_bundled_build_orders(&bundled_dir);
+                .expect("Failed to get resource dir");
+            for candidate in [
+                resource_dir.join("build-orders"),
+                resource_dir.join("_up_").join("build-orders"),
+            ] {
+                if candidate.is_dir() {
+                    if let Err(e) = storage.copy_bundled_build_orders(&candidate) {
+                        tracing::warn!("Failed to copy bundled build orders from {:?}: {}", candidate, e);
+                    }
+                }
+            }
 
             let settings = storage.load_settings().unwrap_or_default();
             let app_state = AppState {

@@ -33,13 +33,20 @@ fn save_calibration_preview() {
         println!("{}: x={}, y={}, w={}, h={}", name, x, y, w, h);
     }
 
-    // Crop to just the top bar area for easier viewing
+    // Save to the temp dir: this test must not depend on any particular
+    // checkout path (it previously hardcoded the author's Windows path).
+    let out_dir = std::env::temp_dir();
     let top_bar = image::imageops::crop_imm(&img, 0, 0, img.width().min(960), 50);
     let top_bar_img = top_bar.to_image();
-    top_bar_img.save("E:/Development/open-age/calibration_preview.png").expect("Failed to save");
+    top_bar_img
+        .save(out_dir.join("calibration_preview.png"))
+        .expect("Failed to save");
 
     // Also save full screenshot for reference
-    img.save("E:/Development/open-age/calibration_full.png").expect("Failed to save full");
+    img.save(out_dir.join("calibration_full.png")).expect("Failed to save full");
 
-    println!("Saved calibration_preview.png and calibration_full.png");
+    println!(
+        "Saved calibration_preview.png and calibration_full.png to {:?}",
+        out_dir
+    );
 }

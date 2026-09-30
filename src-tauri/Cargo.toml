@@ -23,6 +23,9 @@ xcap = "0.0.14"
 image = { version = "0.25", default-features = false, features = ["png", "bmp"] }
 imageproc = "0.25"
 base64 = "0.22"
+# Windows-only APIs (unused by current code, but kept for the Windows OCR path).
+# Gated so the crate also builds on Linux/macOS dev machines.
+[target.'cfg(windows)'.dependencies]
 windows = { version = "0.61", features = [
     "Media_Ocr",
     "Graphics_Imaging",

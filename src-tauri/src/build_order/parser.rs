@@ -2,7 +2,7 @@ use anyhow::{bail, Context, Result};
 use std::path::Path;
 use tracing::warn;
 
-use super::BuildOrder;
+use super::{BuildOrder, Trigger};
 
 /// Load a build order from a YAML or JSON file, determined by extension.
 pub fn load_build_order(path: &Path) -> Result<BuildOrder> {
@@ -48,25 +48,25 @@ pub fn validate_build_order(bo: &BuildOrder) -> Vec<String> {
         }
     }
 
-    // Check if steps are in a reasonable order based on trigger values.
-    let trigger_values: Vec<Option<u32>> = bo
-        .steps
-        .iter()
-        .map(|s| {
-            s.at.time_seconds
-                .or(s.at.villagers)
-                .or(s.at.population_min)
-        })
-        .collect();
+    // Trigger values of different kinds are incommensurable: a step fired by
+    // `villagers: 14` after one fired by `time_seconds: 210` is perfectly
+    // ordered, so each field is checked against its own series (in file
+    // order) instead of one merged list where 14 would look "before" 210.
+    let series: [(&str, fn(&Trigger) -> Option<u32>); 3] = [
+        ("time_seconds", |t| t.time_seconds),
+        ("villagers", |t| t.villagers),
+        ("population_min", |t| t.population_min),
+    ];
 
-    let mut warned_order = false;
-    for pair in trigger_values.windows(2) {
-        if let (Some(a), Some(b)) = (pair[0], pair[1]) {
-            if b < a && !warned_order {
-                warnings.push(
-                    "Build order steps appear to be out of order based on trigger values".to_string(),
-                );
-                warned_order = true;
+    for (field, get) in series {
+        let values: Vec<u32> = bo.steps.iter().filter_map(|s| get(&s.at)).collect();
+        for pair in values.windows(2) {
+            if pair[1] < pair[0] {
+                warnings.push(format!(
+                    "Build order steps appear to be out of order: `{}` goes {} -> {}",
+                    field, pair[0], pair[1]
+                ));
+                break; // one warning per field is enough
             }
         }
     }
@@ -183,6 +183,80 @@ steps:
         assert!(
             warnings.is_empty(),
             "expected no warnings, got: {:?}",
+            warnings
+        );
+    }
+
+    #[test]
+    fn test_validate_allows_interleaved_time_and_villager_triggers() {
+        // A time-based step between villager-based steps is normal (e.g. an
+        // optional deer lure at 210s right before "6 more vills at 14").
+        let yaml = r#"
+id: test-interleaved
+name: "Test"
+civilization: Generic
+steps:
+  - action: "6 vills on sheep"
+    at: { time_seconds: 0 }
+  - action: "Optional lure at 210s"
+    at: { time_seconds: 210 }
+  - action: "6 more vills to hunt"
+    at: { villagers: 14 }
+  - action: "2 more vills to wood"
+    at: { villagers: 17 }
+  - action: "More time-based steps"
+    at: { time_seconds: 570 }
+"#;
+        let f = write_temp_file(".yaml", yaml);
+        let bo = load_build_order(f.path()).expect("should load");
+        let warnings = validate_build_order(&bo);
+        assert!(
+            warnings.is_empty(),
+            "interleaved triggers should not warn, got: {:?}",
+            warnings
+        );
+    }
+
+    #[test]
+    fn test_validate_warns_when_time_series_goes_backwards() {
+        let yaml = r#"
+id: test-time-backwards
+name: "Test"
+civilization: Generic
+steps:
+  - action: "Later step"
+    at: { time_seconds: 300 }
+  - action: "Earlier step"
+    at: { time_seconds: 210 }
+"#;
+        let f = write_temp_file(".yaml", yaml);
+        let bo = load_build_order(f.path()).expect("should load");
+        let warnings = validate_build_order(&bo);
+        assert!(
+            warnings.iter().any(|w| w.contains("time_seconds") && w.contains("300 -> 210")),
+            "expected a backwards time_seconds warning, got: {:?}",
+            warnings
+        );
+    }
+
+    #[test]
+    fn test_validate_warns_when_villager_series_goes_backwards() {
+        let yaml = r#"
+id: test-vills-backwards
+name: "Test"
+civilization: Generic
+steps:
+  - action: "Later step"
+    at: { villagers: 21 }
+  - action: "Earlier step"
+    at: { villagers: 14 }
+"#;
+        let f = write_temp_file(".yaml", yaml);
+        let bo = load_build_order(f.path()).expect("should load");
+        let warnings = validate_build_order(&bo);
+        assert!(
+            warnings.iter().any(|w| w.contains("villagers") && w.contains("21 -> 14")),
+            "expected a backwards villagers warning, got: {:?}",
             warnings
         );
     }
